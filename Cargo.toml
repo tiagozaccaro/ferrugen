@@ -50,6 +50,8 @@ dioxus = { version = "0.7", default-features = false }
 http = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+platform-core = { path = "crates/platform-core" }
+domain = { path = "crates/domain" }
 thiserror = "2"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "signal", "net", "time"] }
 tower = "0.5"
@@ -69,6 +71,25 @@ proptest = "1"
 rstest = "0.23"
 wiremock = "0.6"
 uuid = { version = "1", features = ["v4", "serde"] }
+ai = { path = "crates/ai" }
+api-client = { path = "crates/api-client" }
+application = { path = "crates/application" }
+audit = { path = "crates/audit" }
+auth = { path = "crates/auth" }
+backup = { path = "crates/backup" }
+billing = { path = "crates/billing" }
+cache = { path = "crates/cache" }
+contracts = { path = "crates/contracts" }
+i18n = { path = "crates/i18n" }
+infrastructure = { path = "crates/infrastructure" }
+jobs = { path = "crates/jobs" }
+persistence = { path = "crates/persistence" }
+plugins = { path = "crates/plugins" }
+rate-limit = { path = "crates/rate-limit" }
+storage = { path = "crates/storage" }
+sync = { path = "crates/sync" }
+tenancy = { path = "crates/tenancy" }
+ui = { path = "crates/ui" }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

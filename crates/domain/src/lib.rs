@@ -13,7 +13,10 @@ impl Tenant {
         if name.is_empty() || name.len() > 120 {
             return Err(DomainError::InvalidTenantName);
         }
-        Ok(Self { id, name: name.to_owned() })
+        Ok(Self {
+            id,
+            name: name.to_owned(),
+        })
     }
 }
 
@@ -35,6 +38,9 @@ mod tests {
     use super::*;
     #[test]
     fn rejects_blank_tenant_name() {
-        assert_eq!(Tenant::new(TenantId::new(), "  ".to_owned()), Err(DomainError::InvalidTenantName));
+        assert_eq!(
+            Tenant::new(TenantId::new(), "  ".to_owned()),
+            Err(DomainError::InvalidTenantName)
+        );
     }
 }

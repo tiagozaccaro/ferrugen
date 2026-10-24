@@ -8,7 +8,6 @@ license.workspace = true
 [dependencies]
 domain = { path = "../../crates/domain" }
 tenancy = { path = "../../crates/tenancy" }
-authorization = { path = "../../crates/authorization" }
 ui = { path = "../../crates/ui" }
 
 
