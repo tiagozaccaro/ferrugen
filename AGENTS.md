@@ -10,6 +10,7 @@ Build a reusable Rust/Ferrugen platform that is MIT-licensed at the project leve
 - Read the issue/spec and implement only the requested bounded task.
 - Follow dependency direction: platform-core -> contracts/domain -> application -> infrastructure/adapters -> app entry points. Avoid dependency cycles.
 - One issue per branch. Never silently broaden scope.
+- Before any implementation: generate a failing test that captures the acceptance criteria; implement only until the test passes; never disable the failing test to make CI green.
 
 ## Rust standards
 - Rust 2024, workspace dependency versions, workspace lints.
