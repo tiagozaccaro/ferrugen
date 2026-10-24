@@ -1,5 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "plugins": ["open-codebase-index"],
   "default_agent": "build",
   "subagent_depth": 2,
   "agent": {
