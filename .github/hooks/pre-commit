@@ -1,0 +1,12 @@
+#!/bin/bash
+# Local pre-commit hook: remind agent/human about tracking and protection rules
+# Install: cp .github/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+
+echo "=== Protection Reminder ==="
+echo "Branch: $(git rev-parse --abbrev-ref HEAD)"
+echo "Target: main is protected (PR + CI + audit)."
+echo "Commit tags: include [agent:<harness>] if AI-generated."
+echo "Scope: bounded; no silent broadening."
+echo "Fix capability: backup tags + revert workflow available."
+echo "Recovery docs: docs/recovery.md"
+echo "=== End Reminder ==="

@@ -1,0 +1,44 @@
+name: Revert PR / Commit
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_sha:
+        description: 'Commit SHA or PR number to revert (use PR URL if PR)'
+        required: true
+      reason:
+        description: 'Reason for revert (required for audit)'
+        required: true
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  revert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Configure git
+        run: |
+          git config user.name "Agent-Revert"
+          git config user.email "revert@ferrugen.local"
+      - name: Revert
+        run: |
+          SHA="${{ github.event.inputs.target_sha }}"
+          # If PR number given, resolve to merge commit
+          if echo "$SHA" | grep -qE '^[0-9]+$'; then
+            SHA=$(git log --grep="Merge pull request #$SHA" --pretty=format:%H -n 1 || echo "$SHA")
+          fi
+          git revert --no-edit "$SHA" || true
+          git commit -m "[agent:revert] revert ${SHA}: ${{ github.event.inputs.reason }}
+
+Agent: revert-workflow
+Issue: revert of bad PR / commit
+Scope: main branch only; no crate edits"
+          git push origin main
+      - name: Log revert
+        run: echo "Reverted ${{ github.event.inputs.target_sha }}: ${{ github.event.inputs.reason }}" >> revert-log.md

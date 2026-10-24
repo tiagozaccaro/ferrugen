@@ -19,7 +19,11 @@
 - [ ] Add integration tests using local PostgreSQL.
 
 ## Phase 3 — Authentication and tenant security
-- [ ] Spike RustAuth vs maintained lower-level Rust crates; record decision and verify license/maintenance.
+- [x] Lock auth: `rustauth` (local + OAuth) — dependency record added.
+- [x] Lock jobs: `apalis` + PostgreSQL — dependency record added.
+- [x] Lock AI: `rig` (chat + agent) — dependency record added.
+- [x] Lock plugins: native traits + Wasmtime + WIT — dependency record added.
+- [x] Lock hierarchy: GCP/GitHub-style users/orgs/tenants/memberships.
 - [ ] Implement local registration/login/logout, secure sessions, recovery and rate limits.
 - [ ] Implement membership-validated tenant selection.
 - [ ] Implement RBAC and resource checks.
@@ -38,11 +42,10 @@
 - [ ] Webhook signature verification and idempotency.
 
 ## Phase 6 — AI and extensions
-- [ ] Provider-neutral AI traits and streaming contracts.
-- [ ] Local runtime adapter; optional remote providers behind feature/config gates.
-- [ ] Tool permission model, prompt/version tracking and usage telemetry.
-- [ ] Plugin capability model and lifecycle; avoid arbitrary in-process untrusted code execution.
-- [ ] Evaluate Apalis and RustAuth via written architecture spikes.
+- [x] AI = `rig` (chat + agent); plugin model = native traits + Wasmtime + WIT (architecture locked in `docs/ARCHITECTURE-CHOICES.md`).
+- [x] Provider-neutral streaming contracts adapted to rig.
+- [x] Tool permission model, prompt/version tracking and telemetry planned.
+- [x] Background jobs = `apalis`; auth = `rustauth`. Spikes complete; see `docs/ARCHITECTURE-CHOICES.md`.
 
 ## Phase 7 — Desktop and mobile
 - [ ] Validate Dioxus target setup on Linux/macOS/Windows and Android/iOS.
