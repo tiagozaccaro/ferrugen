@@ -5,6 +5,8 @@ This directory is organized for any AI agent (`opencode`, other harnesses, or ex
 1. `AGENTS.md` (repo root) — mission, security rules, Rust standards, Dioxus 0.7 reference.
 2. `docs/guides/architecture-choices.md` — locked architecture (rustauth, apalis, rig, wasmtime, plugin trait, hierarchy, AI design).
 3. `docs/architecture/overview.md` + `docs/architecture/dependency-policy.md` — architecture + dependency rules.
+3. `docs/architecture/overview.md` + `docs/architecture/dependency-policy.md` — architecture + dependency rules.
+4. `docs/policies/` (`security-policy.md`, `testing-policy.md`, `branch-protection.md`) + `docs/rust-engineering/` (split Microsoft Pragmatic Rust Guidelines sections) — engineering, security, testing, and branch-protection policies.
 4. `docs/implementation.md` (repo root) or `docs/guides/speckit-workflow.md` — implementation protocol + speckit commands.
 5. `docs/plans/implementation-roadmap.md` — phases (0-8) with current status.
 6. `docs/plans/phase-2-schema.md` — multi-tenant schema design.
@@ -20,6 +22,6 @@ Agent rules (from `AGENTS.md`): read spec before edit; confirm acceptance criter
 Compatible with `opencode`, Claude, GPT, and other agents: all instructions are plain markdown with file paths; no proprietary syntax required.
 
 ### Instruction system references (added by agent instruction implementation)
-- docs/rust-engineering.md / docs/security-policy.md / docs/testing-policy.md
+- docs/rust-engineering/ (split sections) / docs/policies/ (security-policy.md, testing-policy.md, branch-protection.md) / docs/skills/ (rust-engineering, rust-security)
 - docs/skills/ (rust-engineering, rust-security, etc.)
 - docs/branch-protection.md / scripts/instruction-integrity.sh

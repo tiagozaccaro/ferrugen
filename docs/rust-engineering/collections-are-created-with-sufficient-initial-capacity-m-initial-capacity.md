@@ -1,0 +1,34 @@
+<!-- Section from Microsoft Pragmatic Rust Guidelines -->
+# Collections Are Created With Sufficient Initial Capacity M Initial Capacity
+
+## Collections are created with sufficient initial capacity (M-INITIAL-CAPACITY) { #M-INITIAL-CAPACITY }
+
+<why>efficient collection creation.</why>
+
+Where the final or approximate size of a collection (`Vec`, `String`, `HashMap`, `HashSet`, etc.) is known at construction time, it should be created via   `with_capacity` rather than `new` or `default`.
+
+Collections created without capacity may be re-allocated multiple times during their initialization, which also includes copying their content. Creating them with sufficient capacity can entirely avoid this needless overhead.
+
+```rust,ignore
+// Bad, probably re-allocates and copies content over multiple times.
+let mut rval = Vec::new();
+for x in &other {
+    rval.push(convert(x));
+}
+
+// Better, creates collection with sufficient capacity upfront.
+let mut rval = Vec::with_capacity(other.len());
+for x in &other {
+    rval.push(convert(x));
+}
+```
+
+Iterator-driven construction (`collect`) inherits this behavior via `size_hint` and should be preferred over manual `push` loops when possible:
+
+```rust,ignore
+// Ideal, looks nicer and is performant
+let rval: Vec<_> = other.iter().map(convert).collect();
+```
+
+
+
