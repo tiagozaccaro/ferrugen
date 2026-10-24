@@ -76,6 +76,29 @@ for expected in '## Agent Audit Log' 'PR: 7' 'Author: evil' 'Agent/Harness: Agen
   fi
 done
 
+TEMPLATE_BODY=$(cat <<'EOF'
+## Summary
+- test
+
+## Agent / Change Tracking
+- Agent / harness used: opencode
+EOF
+)
+audit_out=$(
+  cd "$WORK" || exit 1
+  PR_NUMBER=8 \
+  PR_AUTHOR=test \
+  PR_BODY="$TEMPLATE_BODY" \
+  BASE_SHA=0000000 \
+  HEAD_SHA=1111111 \
+  bash "$ROOT/scripts/github/audit-agent-log.sh" 2>&1
+)
+if printf '%s\n' "$audit_out" | grep -qF 'Agent/Harness: Agent / harness used: opencode'; then
+  pass 'audit script uses the agent field, not the section heading'
+else
+  fail 'audit script matched the Agent / Change Tracking heading'
+fi
+
 if [ ! -e "$WORK/pwned" ]; then
   pass 'audit script did not execute body contents'
 else

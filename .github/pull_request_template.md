@@ -1,4 +1,3 @@
-# MANDATORY PR TEMPLATE — Every AI agent PR must use this format
 ## Summary
 - 
 
