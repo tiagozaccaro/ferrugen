@@ -7,5 +7,6 @@
 # - Required checks: "rust", "dependency-policy"
 # - Pull request required approvals: 0 (self-approval); bump to >0 if review needed
 # - Push restricted to PRs / push denied for non-main branches
+# - Verified commit signatures: NOT required (disabled per instruction).
 # - Bypass actors configured per-user under Settings → Rulesets → main → Bypass list
 # This file keeps a machine-readable record; enforcement lives in GitHub.
