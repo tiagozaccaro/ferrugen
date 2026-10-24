@@ -35,9 +35,6 @@ The CI audit-log workflow (`.github/workflows/audit-agent-log.yml`) creates an a
 
 ## Fix / Revert Capability
 
-### Backup Tags
-Before any merge to `main`, a backup tag `pre-merge-<pr-number>-<sha>` is pushed by `backup-tag.yml`.
-
 ### Revert Workflow
 `.github/workflows/revert.yml` provides a manual trigger to revert a bad PR via `github.ref`.
 
@@ -47,6 +44,6 @@ See `docs/recovery.md` for `git reflog`, `git bisect`, tag rollback, and manual 
 ## Fixing Mistakes
 1. Identify the bad commit / PR from audit artifact or git log (`[agent:...]` tags help).
 2. Create a revert PR referencing the original issue (`Reverts #N`).
-3. If already merged to `main`: use `revert.yml`, restore from backup tag, or apply `git revert <sha>` directly.
+3. If already merged to `main`: use `revert.yml` or apply `git revert <sha>` directly.
 4. Re-run full CI (`cargo fmt/check/test/clippy`, `cargo deny check`, `cargo audit`) before re-merge.
 5. Update this doc if the mistake reveals a gap in protection rules.
