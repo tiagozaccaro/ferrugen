@@ -15,22 +15,11 @@ jobs:
         with:
           fetch-depth: 0
       - name: Check PR body
-        run: |
-          BODY="${{ github.event.pull_request.body }}"
-          FAIL=0
-          # Must contain agent/harness
-          if echo "$BODY" | grep -qiE "Agent.*:|Agent / harness"; then : ; else echo "FAIL: Agent/harness not specified"; FAIL=1; fi
-          # Must contain bounded scope
-          if echo "$BODY" | grep -qiE "Scope.*:|Scope"; then : ; else echo "FAIL: Change scope not specified"; FAIL=1; fi
-          # Must reference issue/spec
-          if echo "$BODY" | grep -qiE "Closes #|Issue.*:|specs/"; then : ; else echo "FAIL: Issue/spec link missing"; FAIL=1; fi
-          # Must mention reviews
-          if echo "$BODY" | grep -qiE "Independent reviews|review"; then : ; else echo "FAIL: Independent review mention missing"; FAIL=1; fi
-          # Must use mandatory PR template sections (Summary, Issue, Acceptance, Validation, Independent reviews)
-          if echo "$BODY" | grep -qE "## Summary"; then : ; else echo "FAIL: PR template section '## Summary' missing"; FAIL=1; fi
-          if echo "$BODY" | grep -qE "## Issue"; then : ; else echo "FAIL: PR template section '## Issue' missing"; FAIL=1; fi
-          if echo "$BODY" | grep -qE "## Acceptance criteria"; then : ; else echo "FAIL: PR template section '## Acceptance criteria' missing"; FAIL=1; fi
-          if [ "$FAIL" -eq 1 ]; then exit 1; fi
-          echo "PASS: Agent tracking, scope, issue link, reviews present"
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: bash scripts/github/check-pr-body.sh
       - name: Log guard result
-        run: echo "Merge-guard: $FAIL for PR ${{ github.event.pull_request.number }}" >> merge-guard-log.md
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "Merge-guard: pass for PR ${PR_NUMBER}" >> merge-guard-log.md

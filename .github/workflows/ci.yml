@@ -46,3 +46,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
+
+  workflow-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Workflow injection guard
+        run: bash tests/github-governance/workflow-injection-test.sh

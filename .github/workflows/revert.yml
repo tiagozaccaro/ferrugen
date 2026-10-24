@@ -27,18 +27,25 @@ jobs:
           git config user.name "Agent-Revert"
           git config user.email "revert@ferrugen.local"
       - name: Revert
+        env:
+          TARGET_SHA: ${{ github.event.inputs.target_sha }}
+          REASON: ${{ github.event.inputs.reason }}
         run: |
-          SHA="${{ github.event.inputs.target_sha }}"
+          SHA="${TARGET_SHA}"
           # If PR number given, resolve to merge commit
           if echo "$SHA" | grep -qE '^[0-9]+$'; then
-            SHA=$(git log --grep="Merge pull request #$SHA" --pretty=format:%H -n 1 || echo "$SHA")
+            SHA=$(git log --grep="Merge pull request #${SHA}" --pretty=format:%H -n 1 || echo "$SHA")
           fi
           git revert --no-edit "$SHA" || true
-          git commit -m "[agent:revert] revert ${SHA}: ${{ github.event.inputs.reason }}
+          git commit -m "[agent:revert] revert ${SHA}: ${REASON}
 
-Agent: revert-workflow
-Issue: revert of bad PR / commit
-Scope: main branch only; no crate edits"
+          Agent: revert-workflow
+          Issue: revert of bad PR / commit
+          Scope: main branch only; no crate edits"
           git push origin main
       - name: Log revert
-        run: echo "Reverted ${{ github.event.inputs.target_sha }}: ${{ github.event.inputs.reason }}" >> revert-log.md
+        env:
+          TARGET_SHA: ${{ github.event.inputs.target_sha }}
+          REASON: ${{ github.event.inputs.reason }}
+        run: |
+          echo "Reverted ${TARGET_SHA}: ${REASON}" >> revert-log.md

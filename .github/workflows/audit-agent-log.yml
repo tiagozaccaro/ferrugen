@@ -5,8 +5,7 @@ on:
     types: [opened, edited, synchronize, reopened, closed]
 
 permissions:
-  contents: write
-  actions: write
+  contents: read
 
 jobs:
   audit-log:
@@ -16,14 +15,13 @@ jobs:
         with:
           fetch-depth: 0
       - name: Log agent actions
-        run: |
-          echo "## Agent Audit Log" >> agent-audit.md
-          echo "PR: ${{ github.event.number }}" >> agent-audit.md
-          echo "Author: ${{ github.event.pull_request.user.login }}" >> agent-audit.md
-          echo "Agent/Harness: $(echo '${{ github.event.pull_request.body }}' | grep -i -o 'Agent.*\|Harness.*' || echo 'unknown')" >> agent-audit.md
-          echo "Scope (from PR body): $(echo '${{ github.event.pull_request.body }}' | grep -A2 'Change scope' || echo 'unspecified')" >> agent-audit.md
-          echo "Commits: $(git rev-list --count ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }})" >> agent-audit.md
-          echo "---" >> agent-audit.md
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: bash scripts/github/audit-agent-log.sh >> agent-audit.md
       - name: Upload audit artifact
         uses: actions/upload-artifact@v4
         with:

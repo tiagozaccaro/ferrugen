@@ -17,8 +17,10 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create backup tag
+        env:
+          PR_NUMBER: ${{ github.event.number }}
         run: |
-          TAG="pre-merge-${{ github.event.number }}-$(git rev-parse --short HEAD)"
+          TAG="pre-merge-${PR_NUMBER}-$(git rev-parse --short HEAD)"
           git tag "$TAG"
           git push origin "$TAG"
           echo "Created $TAG"
