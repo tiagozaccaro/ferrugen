@@ -9,7 +9,7 @@ license.workspace = true
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
-jobs = { path = "../../crates/jobs" }
+jobs = { workspace = true }
 
 
 [lints]

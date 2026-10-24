@@ -1,6 +1,8 @@
 #!/bin/bash
-# Local pre-commit hook: remind agent/human about tracking and protection rules
+# Pre-commit check script — run before every AI/human commit to prevent broken code.
 # Install: cp .github/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+
+FAIL=0
 
 echo "=== Protection Reminder ==="
 echo "Branch: $(git rev-parse --abbrev-ref HEAD)"
@@ -10,3 +12,36 @@ echo "Scope: bounded; no silent broadening."
 echo "Fix capability: backup tags + revert workflow available."
 echo "Recovery docs: docs/recovery.md"
 echo "=== End Reminder ==="
+
+echo "--- Running commit checks ---"
+
+# 1. Format check
+if ! cargo fmt --all -- --check 2>/dev/null; then
+  echo "FAIL: cargo fmt --all -- --check"
+  FAIL=1
+else
+  echo "PASS: cargo fmt"
+fi
+
+# 2. Dependency / audit check (deny)
+if ! cargo deny check 2>/dev/null; then
+  echo "FAIL: cargo deny check"
+  FAIL=1
+else
+  echo "PASS: cargo deny"
+fi
+
+# 3. Workspace compile check (lightweight; skips tests for speed)
+if ! cargo check --workspace 2>/dev/null; then
+  echo "FAIL: cargo check --workspace"
+  FAIL=1
+else
+  echo "PASS: cargo check"
+fi
+
+if [ "$FAIL" -eq 1 ]; then
+  echo "=== BLOCKED: fix above errors before committing ==="
+  exit 1
+fi
+
+echo "=== All checks passed. Safe to commit ==="
