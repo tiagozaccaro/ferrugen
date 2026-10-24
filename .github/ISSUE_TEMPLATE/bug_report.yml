@@ -1,0 +1,30 @@
+name: Bug Report
+about: Report unexpected behavior, errors, or security issues.
+description: Provide exact reproduction steps, environment, observed result, and impact.
+labels: [bug]
+body:
+  - type: markdown
+    value: "## Before reporting\nConfirm the issue is reproducible on main.\n"
+  - type: textarea
+    id: symptoms
+    label: Symptoms / error messages
+    validations: { required: true }
+  - type: textarea
+    id: repro
+    label: Reproduction steps
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    label: Expected behavior
+    validations: { required: true }
+  - type: textarea
+    id: actual
+    label: Actual behavior
+    validations: { required: true }
+  - type: textarea
+    id: environment
+    label: Environment (branch, OS, Rust version, commit SHA)
+  - type: input
+    id: severity
+    label: Severity / impact
+    placeholder: "low / medium / high / critical"

@@ -1,0 +1,23 @@
+name: Feature Request
+about: Propose new capabilities, changes, or integrations.
+description: Describe the goal, alternatives, and verification criteria.
+labels: [feature]
+body:
+  - type: textarea
+    id: problem
+    label: Problem or opportunity
+    validations: { required: true }
+  - type: textarea
+    id: proposal
+    label: Proposed change
+    validations: { required: true }
+  - type: textarea
+    id: scope
+    label: Scope (what is / is not included)
+  - type: textarea
+    id: acceptance
+    label: Acceptance criteria
+  - type: input
+    id: issue_ref
+    label: Related issue / spec number
+    placeholder: "Closes #..."

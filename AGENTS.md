@@ -1,5 +1,7 @@
 # Repository instructions
 
+Instruction hierarchy (precedence high → low): platform/system policies > constitution > root `AGENTS.md` > directory `AGENTS.md` > skills (`docs/skills/`) > automated checks.
+
 See `docs/index.md` for the pre-change read order (AGENTS, architecture, roadmap, specs, constitution, speckit, templates). Read before any edit.
 
 ## Mission
@@ -10,6 +12,7 @@ Build a reusable Rust/Ferrugen platform that is MIT-licensed at the project leve
 - Read the issue/spec and implement only the requested bounded task.
 - Follow dependency direction: platform-core -> contracts/domain -> application -> infrastructure/adapters -> app entry points. Avoid dependency cycles.
 - One issue per branch. Never silently broaden scope.
+- Before any implementation: generate a failing test that captures the acceptance criteria; implement only until the test passes; never disable the failing test to make CI green.
 
 ## Rust standards
 - Rust 2024, workspace dependency versions, workspace lints.
@@ -41,6 +44,26 @@ Run applicable commands:
 - `cargo clippy -p <changed-package> --all-targets -- -D warnings`
 - `cargo deny check`
 - `cargo audit`
+
+## Agent instruction system
+Canonical policies live in `docs/` (`rust-engineering.md`, `security-policy.md`, `testing-policy.md`) and reusable skills in `docs/skills/`. Directory-specific adapters go in `crates/<name>/AGENTS.md` or `apps/<name>/AGENTS.md`.
+
+- Repository overview: `crates/*` (platform, contracts/domain, application, infrastructure/adapters) + `apps/*` (web, desktop, mobile, worker, admin-cli, api). See `docs/architecture/overview.md`.
+- How to discover guidance: root `AGENTS.md` → `docs/rust-engineering.md`, `docs/security-policy.md`, `docs/testing-policy.md`, then directory `AGENTS.md`, then skills.
+- Supported Rust toolchain: edition 2024, Rust ≥1.85 (MSRV). Identify the authoritative version via `rustc --version` and Cargo config; do not upgrade blindly.
+- Build/validate commands (use exact workspace): `cargo fmt --all -- --check`, `cargo check -p <crate>`, `cargo clippy -p <crate> --all-targets -- -D warnings`, `cargo test -p <crate>` / `cargo test --workspace`, `cargo deny check`, `cargo audit`.
+- Dependency changes: review direct + transitive licenses with `cargo deny`; advisories with `cargo audit`; prefer permissive licences (MIT/Apache-2.0/BSD family); never ignore vulnerabilities without documented justification.
+- API design: strong types, explicit invariants, documented public surface; domain errors via `thiserror`; no `anyhow` in domain crates.
+- Errors/observability: meaningful `Result` types; no `unwrap`/`expect`/panic in production paths unless invariant-justified; log secrets never.
+- Async: Tokio model follows project conventions; no blocking executor calls; bounded concurrency/queues.
+- Security/privacy: server-side authorisation; tenant scoped at boundary; secrets only in env/session; cryptography via established libraries.
+- Database/migrations: where a database is used, follow `persistence` crate conventions; migrate in dependency order.
+- Testing: unit/integration/regression/contract/auth/concurrency/failure-path; validate behaviour not implementation; never weaken tests to pass.
+- Documentation: keep inline concise; move workflows to skills/policies.
+- Git: one issue per branch; small commits; PR title describes behaviour; body includes `Closes #N`; request code+security review.
+- Prohibited shortcuts: no bypassing branch protection/CI; no disabling security controls to make builds pass; no masking failures; no fabricated test results.
+- Definition of done: change smallest coherent unit; tests pass; fmt/clippy/check green; diff reviewed for scope/regressions/secrets; report executed commands and actual results.
+- Reporting completed work and unresolved limitations is mandatory.
 
 ## Git workflow
 - One GitHub issue per branch; small commits.

@@ -1,2 +1,9 @@
-# Protection layer: all agent changes must be traceable and recoverable
-*
+# AI / Human Collaboration
+
+- Every change requires a GitHub issue (task/bug/feature) and a dedicated branch.
+- PR must use the mandatory template (`.github/pull_request_template.md`).
+- CI must pass (rust / dependency-policy / merge-guard).
+- Pre-commit checks (format / deny / check) enforced via `.github/hooks/pre-commit`. Install with `cp .github/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`. Never commit with failing checks.
+- Agent actions tracked: commit tags `[agent:<harness>]`, PR body agent fields, audit artifacts.
+- Never push directly to `main`; never merge without authorization. Self-approval permitted for solo maintainer.
+- Recovery: see `docs/recovery.md`; backup tags `pre-merge-*`; revert workflow available.

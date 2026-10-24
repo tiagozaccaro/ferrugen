@@ -1,11 +1,13 @@
 # GitHub Branch Protection — `main` (Apply Manually or via Admin API)
 
+> **Solo-maintainer exception (current)** — Only one maintainer on this project; approvals reduced to 1 and self-approval permitted. Apply the same exception on the GitHub repo settings / ruleset.
+
 Required settings for `main` (all must be enabled before any agent-driven merge is permitted):
 
 1. **Require a pull request before merging**
-   - Require approvals: 1 (or 2 for security/auth changes)
+   - Require approvals: 1 (solo-maintainer exception — only one maintainer; self-approval permitted)
    - Dismiss stale PR approvals when new commits are pushed
-   - Require review from CODEOWNERS (if defined)
+   - Require review from CODEOWNERS (if defined) — sole maintainer in CODEOWNERS may approve own PR
 
 2. **Require status checks to pass before merging**
    - `rust` (format/check/test/clippy)

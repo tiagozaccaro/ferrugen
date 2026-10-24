@@ -12,7 +12,11 @@ pub struct AuditEvent {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum AuditOutcome { Success, Denied, Failure }
+pub enum AuditOutcome {
+    Success,
+    Denied,
+    Failure,
+}
 
-/// Secret values, credentials, tokens and full request bodies must never be
-/// embedded in audit metadata.
+// Secret values, credentials, tokens and full request bodies must never be
+// embedded in audit metadata.

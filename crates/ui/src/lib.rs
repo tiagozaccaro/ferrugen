@@ -1,10 +1,10 @@
+pub mod echo;
 pub mod hero;
 pub mod navbar;
-pub mod echo;
 
+pub use echo::Echo;
 pub use hero::Hero;
 pub use navbar::Navbar;
-pub use echo::Echo;
 
 use dioxus::prelude::*;
 
