@@ -1,0 +1,11 @@
+# Ruleset reference for `main` (migrated from classic branch protection)
+# Configured via GitHub UI: Settings → Rules → Rulesets → `main`
+# Not a fully automated file; kept as documentation / reference.
+
+# Reference notes for Ruleset enforcement (configured via GitHub UI, not via file):
+# - Target: refs/heads/main
+# - Required checks: "rust", "dependency-policy"
+# - Pull request required approvals: 0 (self-approval); bump to >0 if review needed
+# - Push restricted to PRs / push denied for non-main branches
+# - Bypass actors configured per-user under Settings → Rulesets → main → Bypass list
+# This file keeps a machine-readable record; enforcement lives in GitHub.

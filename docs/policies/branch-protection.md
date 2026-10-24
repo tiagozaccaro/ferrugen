@@ -1,13 +1,19 @@
-# CI and Branch Protection Recommendations
+# CI and Branch Protection — Ruleset
 
-Manual steps (administration permissions required):
-1. Make the following required checks:
-   - `rust` (format, check, test, clippy)
-   - `dependency-policy` (deny, audit)
-2. Allow self-approval: in repo Settings → Branches → `main`, uncheck "Require approvals" or set required reviewers to 0 (manual admin step; file-based settings not supported without `probot/settings`).
-3. Restrict pushes to `main`.
-4. Use least-privilege `permissions:` in `.github/workflows` (already `contents: read`).
-5. Do not bypass protection to merge agent-generated work.
+Migrated from classic branch protection to GitHub Ruleset (`main` branch).
+
+Required checks (Ruleset → Status checks):
+- `rust` (format, check, test, clippy)
+- `dependency-policy` (deny, audit)
+
+Push restrictions: `main` protected.
+Bypass / self-approval: configured via Ruleset bypass actors (manual admin step).
+
+Manual steps (admin permissions required):
+1. Configure Ruleset for `main`: required checks, restrict pushes, set bypass for self-approval if needed.
+2. Verify `docs/index.md` references ruleset (not classic settings).
+3. Use least-privilege `permissions:` in `.github/workflows`.
+4. Never bypass protection to merge agent-generated work.
 
 Local equivalent for development (before opening PR):
 - `cargo fmt --all -- --check`
