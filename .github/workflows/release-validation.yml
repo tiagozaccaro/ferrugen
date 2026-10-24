@@ -1,0 +1,41 @@
+name: Release Validation
+
+on:
+  push:
+    tags:
+      - 'v*'
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to validate, for example 0.2.0 or v0.2.0'
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Determine version
+        id: version
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+        run: |
+          if [ "${EVENT_NAME}" = "workflow_dispatch" ]; then
+            version="${INPUT_VERSION#v}"
+          else
+            version="${REF_NAME#v}"
+          fi
+          printf 'version=%s\n' "${version}" >> "${GITHUB_OUTPUT}"
+      - name: Verify changelog entry
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: python3 scripts/release.py verify "${VERSION}"

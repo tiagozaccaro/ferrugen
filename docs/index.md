@@ -16,6 +16,7 @@ This directory is organized for any AI agent (`opencode`, other harnesses, or ex
 10. `.specify/templates/` — spec/plan/task/constitution templates.
 11. `.specify/workflows/speckit/` — speckit workflow definition.
 12. `docs/plans/README.md` + `docs/guides/README.md` + `docs/architecture/README.md` — subfolder navigation.
+13. `docs/guides/release.md` — release-time changelog generation, first-release creation, version bump and tag validation.
 
 Agent rules (from `AGENTS.md`): read spec before edit; confirm acceptance criteria; implement smallest vertical slice; never silently broaden scope; add/update tests; run `cargo fmt`/`check`/`test`/`clippy`; run `cargo deny check` and `cargo audit`; never merge/deploy without authorization.
 

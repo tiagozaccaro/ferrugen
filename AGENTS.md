@@ -44,6 +44,7 @@ Run applicable commands:
 - `cargo clippy -p <changed-package> --all-targets -- -D warnings`
 - `cargo deny check`
 - `cargo audit`
+- `bash tests/release/release-test.sh` (when release/changelog tooling changes)
 
 ## Agent instruction system
 Canonical policies live in `docs/` (`rust-engineering.md`, `security-policy.md`, `testing-policy.md`) and reusable skills in `docs/skills/`. Directory-specific adapters go in `crates/<name>/AGENTS.md` or `apps/<name>/AGENTS.md`.
