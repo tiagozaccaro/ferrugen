@@ -1,0 +1,65 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "build",
+  "subagent_depth": 2,
+  "agent": {
+    "build": {
+      "mode": "primary",
+      "description": "Implements one approved issue at a time, follows AGENTS.md and project architecture.",
+      "prompt": "{file:./.opencode/prompts/build.txt}",
+      "permission": {
+        "edit": "allow",
+        "bash": "ask"
+      }
+    },
+    "plan": {
+      "mode": "primary",
+      "description": "Read-only planning and architecture analysis.",
+      "prompt": "{file:./.opencode/prompts/plan.txt}",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "code-reviewer": {
+      "mode": "subagent",
+      "description": "Independent read-only review of correctness and maintainability.",
+      "prompt": "{file:./.opencode/prompts/code-reviewer.txt}",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "ask",
+          "git diff*": "allow",
+          "git status*": "allow"
+        }
+      }
+    },
+    "security-reviewer": {
+      "mode": "subagent",
+      "description": "Read-only security review focused on auth, tenancy, secrets and data boundaries.",
+      "prompt": "{file:./.opencode/prompts/security-reviewer.txt}",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "ask",
+          "git diff*": "allow",
+          "git status*": "allow"
+        }
+      }
+    },
+    "test-reviewer": {
+      "mode": "subagent",
+      "description": "Read-only reviewer for test design, regression coverage and failure modes.",
+      "prompt": "{file:./.opencode/prompts/test-reviewer.txt}",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "ask",
+          "cargo test*": "allow",
+          "cargo check*": "allow",
+          "git diff*": "allow"
+        }
+      }
+    }
+  }
+}

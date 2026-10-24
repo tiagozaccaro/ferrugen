@@ -1,0 +1,16 @@
+[package]
+name = "mobile"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+dioxus = { workspace = true, features = ["mobile"] }
+ui = { path = "../../crates/ui" }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+# Platform-specific web dependencies can be added here after target validation.
+
+[lints]
+workspace = true

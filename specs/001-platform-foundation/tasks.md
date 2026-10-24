@@ -1,0 +1,21 @@
+# Tasks
+
+- [ ] T001 Validate workspace manifests and all host-target builds.
+- [ ] T002 Add architecture dependency-boundary checks.
+- [ ] T003 Implement stable IDs, errors and configuration validation.
+- [ ] T004 Add SQLx connection pool and migration runner.
+- [ ] T005 Add users, tenants and tenant_memberships migrations.
+- [ ] T006 Add repository integration tests using PostgreSQL.
+- [ ] T007 Complete auth library spike and record ADR.
+- [ ] T008 Implement local auth/session lifecycle.
+- [ ] T009 Implement membership-verified tenant context.
+- [ ] T010 Implement RBAC evaluation and negative tests.
+- [ ] T011 Wire API handlers to application services.
+- [ ] T012 Build sign-in, tenant switcher and dashboard shell.
+- [ ] T013 Add audit events and sensitive action coverage.
+- [ ] T014 Implement safe local file storage.
+- [ ] T015 Evaluate and wire durable background jobs.
+- [ ] T016 Implement local AI provider adapter and license docs.
+- [ ] T017 Add backup/restore scripts and smoke test.
+- [ ] T018 Validate web/desktop/mobile packaging on supported runners.
+- [ ] T019 Add threat model and production readiness checklist.
