@@ -1,5 +1,5 @@
 [advisories]
-vulnerability = "deny"
+# vulnerability is deny by default — cargo-deny 0.19+ always fails on known vulns; no config needed
 unmaintained = "workspace"
 yanked = "deny"
 ignore = []
