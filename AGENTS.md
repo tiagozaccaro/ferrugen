@@ -1,5 +1,7 @@
 # Repository instructions
 
+See `docs/index.md` for the pre-change read order (AGENTS, architecture, roadmap, specs, constitution, speckit, templates). Read before any edit.
+
 ## Mission
 Build a reusable Rust/Ferrugen platform that is MIT-licensed at the project level, self-hostable, and does not require paid services for core features. This workspace is intended as a base-template: reusable `crates/` and `apps/` packages that a real application (e.g., a content creator / YouTube-style SaaS) can reference via `path` dependencies rather than copying source.
 
