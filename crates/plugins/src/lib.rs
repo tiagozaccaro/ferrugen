@@ -16,5 +16,5 @@ pub enum PluginError {
     CapabilityDenied,
 }
 
-/// Do not execute arbitrary third-party plugin code in-process without a
-/// sandbox and a clear threat model. Start with declarative extensions.
+// Do not execute arbitrary third-party plugin code in-process without a
+// sandbox and a clear threat model. Start with declarative extensions.

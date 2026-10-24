@@ -8,7 +8,11 @@ pub struct SyncCursor {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum ConflictPolicy { ServerWins, ClientWins, ManualResolution }
+pub enum ConflictPolicy {
+    ServerWins,
+    ClientWins,
+    ManualResolution,
+}
 
-/// Never silently overwrite concurrent edits. Conflict behavior must be
-/// specified per resource before sync is enabled.
+// Never silently overwrite concurrent edits. Conflict behavior must be
+// specified per resource before sync is enabled.

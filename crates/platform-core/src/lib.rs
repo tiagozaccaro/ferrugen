@@ -11,13 +11,25 @@ pub struct UserId(pub Uuid);
 pub struct TenantId(pub Uuid);
 
 impl UserId {
-    pub fn new() -> Self { Self(Uuid::new_v4()) }
+    pub fn new() -> Self {
+        Self(Uuid::new_v4())
+    }
 }
-impl Default for UserId { fn default() -> Self { Self::new() } }
+impl Default for UserId {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl TenantId {
-    pub fn new() -> Self { Self(Uuid::new_v4()) }
+    pub fn new() -> Self {
+        Self(Uuid::new_v4())
+    }
 }
-impl Default for TenantId { fn default() -> Self { Self::new() } }
+impl Default for TenantId {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 #[derive(Debug, Error, PartialEq, Eq)]
 pub enum CoreError {

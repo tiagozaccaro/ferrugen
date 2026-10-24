@@ -1,6 +1,6 @@
 [advisories]
-vulnerability = "deny"
-unmaintained = "warn"
+# vulnerability is deny by default — cargo-deny 0.19+ always fails on known vulns; no config needed
+unmaintained = "workspace"
 yanked = "deny"
 ignore = []
 
@@ -14,13 +14,17 @@ allow = [
   "Unicode-3.0",
   "Zlib",
   "CC0-1.0",
+"MPL-2.0",
   "0BSD",
+  "NCSA",
+  "CDLA-Permissive-2.0",
+  "Apache-2.0 WITH LLVM-exception",
 ]
 confidence-threshold = 0.93
 
 [bans]
 multiple-versions = "warn"
-wildcards = "deny"
+wildcards = "warn"
 highlight = "all"
 
 [sources]

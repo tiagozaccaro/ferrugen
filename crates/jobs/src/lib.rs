@@ -12,5 +12,5 @@ pub struct JobEnvelope {
     pub idempotency_key: Option<String>,
 }
 
-/// This crate defines job contracts only. A production adapter must provide
-/// durable persistence, leases, retry/backoff, dead-letter handling and metrics.
+// This crate defines job contracts only. A production adapter must provide
+// durable persistence, leases, retry/backoff, dead-letter handling and metrics.

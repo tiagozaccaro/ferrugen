@@ -15,5 +15,16 @@
 ## Required record for new dependencies
 Record the capability, why standard library/existing crates are insufficient, license, maintenance status, transitive concerns, whether it phones home, and the replacement/removal path.
 
+## Dependency records (new)
+- `sqlx`: PostgreSQL connection pool + migrations; MIT/Apache; active; replacement: custom SQLx poller (rejected)
+- `pgvector`: vector storage in PostgreSQL; MIT/Apache; replacement: Qdrant (optional only)
+- `rig`: provider-neutral chat/agent contracts; check license / model weight separation; adapter isolated
+- `apalis`: PostgreSQL-backed durable jobs; MIT/Apache; replacement: custom poller (rejected — too complex)
+- `rustauth`: local + OAuth; verify license / Axum compat; replacement: local session middleware
+- `fastembed`: local embeddings; verify license / model weights separate; optional adapter
+- `tantivy`: FTS; MIT/Apache; replacement: Elasticsearch (deferred — paid)
+- `moka`: in-memory cache; MIT/Apache; replacement: Redis (deferred — separate service)
+- `wasmtime`: WASM sandbox; MIT/Apache; verify Component Model stability
+
 ## No blanket claim
 A MIT project license does not relicense dependencies. The project is designed for permissive dependencies, but each release must pass the actual dependency/license audit.

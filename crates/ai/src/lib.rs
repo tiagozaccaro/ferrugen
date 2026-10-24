@@ -33,5 +33,5 @@ pub trait AiProvider: Send + Sync {
     async fn chat(&self, request: ChatRequest) -> Result<ChatResponse, AiError>;
 }
 
-/// Local runtime adapters should be implemented first. Model-weight licensing
-/// must be reviewed separately from the inference runtime's license.
+// Local runtime adapters should be implemented first. Model-weight licensing
+// must be reviewed separately from the inference runtime's license.
