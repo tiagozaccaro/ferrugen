@@ -6,55 +6,41 @@
 - [ ] Run `cargo fmt`, `cargo check --workspace`, `cargo test --workspace` and resolve compile issues on supported host.
 - [ ] Replace repository URL and contributor copyright holder.
 
-## Phase 1 — Foundation
-- [ ] Stabilize platform-core error, ID, clock and configuration APIs.
-- [ ] Define contracts and domain entity IDs.
-- [ ] Define application ports and dependency direction.
-- [ ] Add test-support helpers and architecture boundary checks.
+## Phase 1a — Foundation (`spec/001`)
+- [ ] Platform-core APIs, contracts, domain IDs.
 
-## Phase 2 — Persistence and migrations
-- [ ] Add SQLx PostgreSQL connection pool and migration runner.
-- [ ] Create users, tenants, memberships, roles, permissions, sessions and audit tables.
-- [ ] Add indexes, foreign keys, unique constraints and migration rollback/recovery notes.
-- [ ] Add integration tests using local PostgreSQL.
+## Phase 2a — Schema and tenancy (`spec/003`)
+- [ ] Multi-tenant schema, migrations.
 
-## Phase 3 — Authentication and tenant security
-- [x] Lock auth: `rustauth` (local + OAuth) — dependency record added.
-- [x] Lock jobs: `apalis` + PostgreSQL — dependency record added.
-- [x] Lock AI: `rig` (chat + agent) — dependency record added.
-- [x] Lock plugins: native traits + Wasmtime + WIT — dependency record added.
-- [x] Lock hierarchy: GCP/GitHub-style users/orgs/tenants/memberships.
-- [ ] Implement local registration/login/logout, secure sessions, recovery and rate limits.
-- [ ] Implement membership-validated tenant selection.
-- [ ] Implement RBAC and resource checks.
-- [ ] Add cross-tenant access regression suite.
+## Phase 3a — Auth (`spec/002`)
+- [ ] `rustauth` session, OAuth, tenant isolation.
 
-## Phase 4 — API and web vertical slice
-- [ ] Wire API routes to application services and PostgreSQL.
-- [ ] Implement sign-in, tenant switcher, dashboard shell, profile and member management.
-- [ ] Add typed API client and contract tests.
-- [ ] Implement consistent errors, tracing, request IDs and health/readiness.
+## Phase 3b — Durable jobs (`spec/004`)
+- [ ] `apalis` + PostgreSQL background jobs.
 
-## Phase 5 — Platform capabilities
-- [ ] Audit trail, localization, file storage, background jobs and settings.
-- [ ] Plans/entitlements and usage limits without requiring a payment provider.
-- [ ] Email interface with local development sink and optional SMTP.
-- [ ] Webhook signature verification and idempotency.
+## Phase 4a — AI and plugins (`spec/005`)
+- [ ] `rig`, WASM sandbox, native plugin traits.
 
-## Phase 6 — AI and extensions
-- [x] AI = `rig` (chat + agent); plugin model = native traits + Wasmtime + WIT (architecture locked in `docs/ARCHITECTURE-CHOICES.md`).
-- [x] Provider-neutral streaming contracts adapted to rig.
-- [x] Tool permission model, prompt/version tracking and telemetry planned.
-- [x] Background jobs = `apalis`; auth = `rustauth`. Spikes complete; see `docs/ARCHITECTURE-CHOICES.md`.
+## Phase 4b — Multi-platform UI (`spec/006`)
+- [ ] Dioxus 0.7 navigation, routing, shared shell.
 
-## Phase 7 — Desktop and mobile
-- [ ] Validate Dioxus target setup on Linux/macOS/Windows and Android/iOS.
-- [ ] Shared navigation and UI, platform-specific packaging, secure token/session storage.
-- [ ] Offline data model, sync protocol, conflict policy and device tests.
+## Phase 5a — Cache and rate limit (`spec/007` `spec/008`)
+- [ ] `moka` caching; `tower` rate limits.
 
-## Phase 8 — Operations and release
-- [ ] Docker Compose for API, worker, PostgreSQL and optional local AI.
-- [ ] Backup/restore scripts, retention, observability and upgrade documentation.
-- [ ] Threat model, dependency/license audit, SBOM and release checklist.
-- [ ] CI matrix for backend, web, desktop and mobile where runners/toolchains support them.
-- [ ] Complete acceptance criteria before describing the starter as production-ready.
+## Phase 5b — Observability and events (`spec/009` `spec/012`)
+- [ ] Metrics/tracing; event contracts (`contracts/src/events`).
+
+## Phase 5c — Backup, privacy and audit (`spec/010` `spec/011`)
+- [ ] Script-based backup; privacy events in audit.
+
+## Phase 5d — Billing, storage, i18n (`spec/013` `spec/014`)
+- [ ] Usage limits; file storage; localization.
+
+## Phase 6 — AI extensions (`spec/005` deep)
+- [ ] Durable agent recovery; tool allowlist; retrieval authorization.
+
+## Phase 7 — Sync, offline and mobile (`spec/015` `spec/016`)
+- [ ] Offline sync protocol; mobile packaging.
+
+## Phase 8 — Operations and release (`spec/009` `spec/010` `spec/011`)
+- [ ] Docker Compose; retention; observability; upgrade docs.
