@@ -13,7 +13,6 @@ Required settings for `main` (all must be enabled before any agent-driven merge 
    - `rust` (format/check/test/clippy)
    - `dependency-policy` (deny + audit)
    - `audit-agent-log` (optional enforcement)
-   - `backup-tag` (optional enforcement)
 
 3. **Restrict who can push to matching branches**
    - Restrict push access to roles: maintainers / admins only
