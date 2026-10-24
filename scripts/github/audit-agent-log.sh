@@ -11,7 +11,7 @@ body=${PR_BODY:-}
 base=${BASE_SHA:-}
 head=${HEAD_SHA:-}
 
-agent=$(printf '%s\n' "$body" | grep -i -m1 -o -E 'Agent.*|Harness.*' || true)
+agent=$(printf '%s\n' "$body" | grep -i -m1 -o -E 'Agent[[:space:]]*(/[[:space:]]*harness( used)?)?[[:space:]]*:.*|Harness[[:space:]]*:.*' || true)
 [ -n "$agent" ] || agent=unknown
 
 scope=$(printf '%s\n' "$body" | grep -i -m1 -A2 'Change scope' || true)
