@@ -6,4 +6,4 @@
 - Pre-commit checks (format / deny / check) enforced via `.github/hooks/pre-commit`. Install with `cp .github/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`. Never commit with failing checks.
 - Agent actions tracked: commit tags `[agent:<harness>]`, PR body agent fields, audit artifacts.
 - Never push directly to `main`; never merge without authorization. Self-approval permitted for solo maintainer.
-- Recovery: see `docs/recovery.md`; backup tags `pre-merge-*`; revert workflow available.
+- Recovery: see `docs/recovery.md`; revert workflow available.

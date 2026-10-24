@@ -4,7 +4,6 @@ Because AI agents can make mistakes at scale, recovery must be scripted and docu
 
 ## Before Any Merge (Prevention)
 - `main` is protected: direct pushes blocked; PR required; CI required.
-- Backup tag pushed automatically (`pre-merge-*`).
 - Every PR has bounded scope in description.
 
 ## When a Mistake Is Found
@@ -25,10 +24,10 @@ git push origin main
 ```
 Or use `.github/workflows/revert.yml` (manual dispatch with PR URL or SHA).
 
-**Restore from backup tag (destructive — use only if revert fails):**
+**Restore from a known-good tag (destructive — use only if revert fails):**
 ```bash
 git fetch --tags
-git reset --hard <pre-merge-*>  # only on a recovery branch
+git reset --hard <known-good-tag>  # only on a recovery branch
 ```
 Then force-push only if authorized and documented.
 
