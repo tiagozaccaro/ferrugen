@@ -12,7 +12,10 @@ Required settings for `main` (all must be enabled before any agent-driven merge 
 2. **Require status checks to pass before merging**
    - `rust` (format/check/test/clippy)
    - `dependency-policy` (deny + audit)
+   - `release-tooling` (changelog/release script regression tests)
    - `audit-agent-log` (optional enforcement)
+
+   Release tags additionally run `Release Validation / changelog`, which checks that the tag, workspace version and `CHANGELOG.md` agree.
 
 3. **Restrict who can push to matching branches**
    - Restrict push access to roles: maintainers / admins only

@@ -53,3 +53,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Workflow injection guard
         run: bash tests/github-governance/workflow-injection-test.sh
+
+  release-tooling:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test changelog release tooling
+        run: bash tests/release/release-test.sh
