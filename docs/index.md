@@ -18,3 +18,8 @@ This directory is organized for any AI agent (`opencode`, other harnesses, or ex
 Agent rules (from `AGENTS.md`): read spec before edit; confirm acceptance criteria; implement smallest vertical slice; never silently broaden scope; add/update tests; run `cargo fmt`/`check`/`test`/`clippy`; run `cargo deny check` and `cargo audit`; never merge/deploy without authorization.
 
 Compatible with `opencode`, Claude, GPT, and other agents: all instructions are plain markdown with file paths; no proprietary syntax required.
+
+### Instruction system references (added by agent instruction implementation)
+- docs/rust-engineering.md / docs/security-policy.md / docs/testing-policy.md
+- docs/skills/ (rust-engineering, rust-security, etc.)
+- docs/branch-protection.md / scripts/instruction-integrity.sh
