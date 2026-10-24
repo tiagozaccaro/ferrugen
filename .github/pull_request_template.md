@@ -1,3 +1,4 @@
+# MANDATORY PR TEMPLATE — Every AI agent PR must use this format
 ## Summary
 - 
 
@@ -13,6 +14,12 @@ Closes #
 - [ ] `cargo test` for affected packages
 - [ ] `cargo clippy` for affected packages
 - [ ] Dependency/license impact reviewed
+
+## Agent / Change Tracking
+- Agent / harness used: _______
+- Issue / spec link: _______
+- Change scope (bounded): _______
+- Review required (independent code / security / test): _______
 
 ## Independent reviews
 - [ ] Code review

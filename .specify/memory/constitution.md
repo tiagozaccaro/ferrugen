@@ -32,3 +32,6 @@ Never label a scaffold as production-ready or a check as passed without evidence
 
 ### Governance
 Amendments require a PR describing motivation, impact on existing modules, migration implications and updated tests/docs. Where an implementation conflicts with this constitution, stop and request a decision rather than silently weakening a principle.
+
+### Locked architecture choices (2026-10-24)
+- Auth: rustauth (local + OAuth). Jobs: apalis + PostgreSQL. AI: rig. Plugins: native traits + Wasmtime + WIT. Hierarchy: GCP/GitHub-style users/orgs/tenants/memberships.

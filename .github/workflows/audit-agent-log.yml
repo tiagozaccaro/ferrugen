@@ -1,0 +1,32 @@
+name: Audit Agent Log
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, closed]
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  audit-log:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Log agent actions
+        run: |
+          echo "## Agent Audit Log" >> agent-audit.md
+          echo "PR: ${{ github.event.number }}" >> agent-audit.md
+          echo "Author: ${{ github.event.pull_request.user.login }}" >> agent-audit.md
+          echo "Agent/Harness: $(echo '${{ github.event.pull_request.body }}' | grep -i -o 'Agent.*\|Harness.*' || echo 'unknown')" >> agent-audit.md
+          echo "Scope (from PR body): $(echo '${{ github.event.pull_request.body }}' | grep -A2 'Change scope' || echo 'unspecified')" >> agent-audit.md
+          echo "Commits: $(git rev-list --count ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }})" >> agent-audit.md
+          echo "---" >> agent-audit.md
+      - name: Upload audit artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-audit-log-pr-${{ github.event.number }}
+          path: agent-audit.md
+          retention-days: 90
