@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
-          components: rustfmt, clippy
+          toolchain-file: rust-toolchain.toml
       - name: Install system dependencies (GTK)
         run: |
           sudo apt-get update
