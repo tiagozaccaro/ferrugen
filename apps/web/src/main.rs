@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use ui::{AppShell, Navbar};
+use ui::Navbar;
 use views::{Blog, Home};
 
 mod views;
