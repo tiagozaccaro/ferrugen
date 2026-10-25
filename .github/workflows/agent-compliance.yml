@@ -1,0 +1,34 @@
+name: Agent Compliance
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify agent-change requirements
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+          ERR=()
+          if ! printf '%s\n' "$PR_BODY" | grep -qE 'Closes #[0-9]+|Fixes #[0-9]+|Issue #[0-9]+'; then
+            ERR+=("missing issue link (Closes #N / Fixes #N / Issue #N)")
+          fi
+          if ! printf '%s\n' "$PR_BODY" | grep -qiE 'test|cargo test|results|verified'; then
+            ERR+=("missing test/results reference")
+          fi
+          if ((${#ERR[@]})); then
+            echo "FAIL agent compliance: ${ERR[*]}" >&2
+            exit 1
+          fi
+          echo "PASS agent compliance via PR body"

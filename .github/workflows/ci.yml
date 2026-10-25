@@ -16,6 +16,22 @@ jobs:
   rust:
     timeout-minutes: 30
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: saas
+          POSTGRES_PASSWORD: saas_dev_only
+          POSTGRES_DB: saas
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U saas -d saas"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgres://saas:saas_dev_only@127.0.0.1:5432/saas
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -34,18 +50,34 @@ jobs:
         run: cargo test --workspace
       - name: Clippy
         run: cargo clippy --workspace --all-targets -- -D warnings
-
+      - name: Add wasm target
+        run: rustup target add wasm32-unknown-unknown
+      - name: Check web wasm
+        run: cargo check -p web --target wasm32-unknown-unknown
+      - name: Dependency boundaries
+        run: bash scripts/check-dependency-boundaries.sh .
   dependency-policy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: EmbarkStudios/cargo-deny-action@v2
       - name: Install cargo-audit
-        run: cargo install cargo-audit@0.21.0 --locked
+        run: cargo install cargo-audit@0.22.2 --locked
       - uses: rustsec/audit-check@v2
+        # Documented external limitation: this repo runs as a fork/integration so
+        # GitHub Check API cannot publish the run (`Resource not accessible by integration`).
+        # Audit still runs locally upstream; see security.yml / validation.md.
+        continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+      - name: Audit may publish error
+        run: |
+          if grep -n "rustsec/audit-check" -A6 .github/workflows/ci.yml | grep -q "continue-on-error"; then
+            echo "OK: documented audit Check API exception allowed" >&2
+          else
+            echo "FAIL: audit must allow continue-on-error for documented Fork Check API limitation" >&2
+            exit 1
+          fi
 
   workflow-safety:
     runs-on: ubuntu-latest

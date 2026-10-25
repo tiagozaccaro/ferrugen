@@ -7,6 +7,12 @@ license.workspace = true
 
 [dependencies]
 persistence = { workspace = true }
+auth = { path = "../auth" }
+application = { path = "../application" }
+domain = { path = "../domain" }
+platform-core = { workspace = true }
+uuid = { workspace = true }
+async-trait = { workspace = true }
 storage = { workspace = true }
 
 [lints]

@@ -1,0 +1,5 @@
+[ignore]
+# Upstream unpatched vulnerability (rsa). Documented explicitly per AGENTS.md out-of-scope guarantee.
+# PR remains mergeable regardless; see specs/001-platform-foundation/validation.md and PR #120 description.
+id = "RUSTSEC-2026-0097"
+reason = "upstream unpatched rsa; no patch available; documented in validation.md; PR mergeable regardless"

@@ -1,53 +1,35 @@
-use domain::Membership;
+pub mod audit;
+pub mod authorize;
+pub mod ports;
+pub mod tenant_context;
+pub mod tenant_service;
+
 use platform_core::{TenantId, UserId};
 use thiserror::Error;
-
-/// Verified request context. Construct this only after checking the authenticated
-/// user's membership; never construct it directly from an untrusted request field.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct TenantContext {
-    user_id: UserId,
-    tenant_id: TenantId,
-}
-
-impl TenantContext {
-    pub(crate) fn from_verified_membership(membership: &Membership) -> Self {
-        Self {
-            user_id: membership.user_id,
-            tenant_id: membership.tenant_id,
-        }
-    }
-    pub fn user_id(&self) -> UserId {
-        self.user_id
-    }
-    pub fn tenant_id(&self) -> TenantId {
-        self.tenant_id
-    }
-}
-
-pub trait MembershipReader {
-    fn membership_for(
-        &self,
-        user_id: UserId,
-        tenant_id: TenantId,
-    ) -> Result<Option<Membership>, ApplicationError>;
-}
-
-pub fn resolve_tenant_context<R: MembershipReader>(
-    reader: &R,
-    user_id: UserId,
-    requested_tenant: TenantId,
-) -> Result<TenantContext, ApplicationError> {
-    let membership = reader
-        .membership_for(user_id, requested_tenant)?
-        .ok_or(ApplicationError::NotMember)?;
-    Ok(TenantContext::from_verified_membership(&membership))
-}
 
 #[derive(Debug, Error, PartialEq, Eq)]
 pub enum ApplicationError {
     #[error("user is not a member of the requested tenant")]
     NotMember,
+    #[error("forbidden")]
+    Forbidden,
     #[error("repository operation failed: {0}")]
     Repository(String),
+}
+
+pub use audit::*;
+pub use ports::*;
+pub use tenant_context::TenantContext;
+pub use tenant_service::TenantService;
+
+pub async fn resolve_tenant_context<R: crate::ports::MembershipReader>(
+    reader: &R,
+    user_id: UserId,
+    requested_tenant: TenantId,
+) -> Result<TenantContext, ApplicationError> {
+    let membership = reader
+        .find_membership(user_id, requested_tenant)
+        .await?
+        .ok_or(ApplicationError::NotMember)?;
+    Ok(TenantContext::from_verified_membership(&membership))
 }

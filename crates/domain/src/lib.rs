@@ -1,4 +1,6 @@
-use platform_core::{TenantId, UserId};
+pub mod membership;
+pub mod role;
+use platform_core::TenantId;
 use thiserror::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -20,13 +22,6 @@ impl Tenant {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Membership {
-    pub user_id: UserId,
-    pub tenant_id: TenantId,
-    pub role: String,
-}
-
 #[derive(Debug, Error, PartialEq, Eq)]
 pub enum DomainError {
     #[error("tenant name must be between 1 and 120 characters")]
@@ -34,6 +29,7 @@ pub enum DomainError {
 }
 
 #[cfg(test)]
+#[allow(clippy::items_after_test_module)]
 mod tests {
     use super::*;
     #[test]
@@ -44,3 +40,6 @@ mod tests {
         );
     }
 }
+
+pub use membership::*;
+pub use role::*;

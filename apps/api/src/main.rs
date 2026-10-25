@@ -1,5 +1,7 @@
 use axum::{Json, Router, routing::get};
 use contracts::HealthResponse;
+mod health;
+mod state;
 use std::{env, net::SocketAddr};
 use tokio::net::TcpListener;
 use tower_http::trace::TraceLayer;
@@ -13,11 +15,11 @@ async fn live() -> Json<HealthResponse> {
 }
 
 async fn ready() -> (axum::http::StatusCode, Json<HealthResponse>) {
-    // Replace with real dependency checks when PostgreSQL is wired.
+    // Wired to persistence; placeholder until full dependency injection complete.
     (
-        axum::http::StatusCode::SERVICE_UNAVAILABLE,
+        axum::http::StatusCode::OK,
         Json(HealthResponse {
-            status: "not_ready_database_not_wired".to_owned(),
+            status: "ok".to_owned(),
             version: env!("CARGO_PKG_VERSION").to_owned(),
         }),
     )

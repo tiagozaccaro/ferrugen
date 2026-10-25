@@ -6,6 +6,9 @@ rust-version.workspace = true
 license.workspace = true
 
 [dependencies]
+application = { path = "../application" }
+async-trait = { workspace = true }
+tracing = { workspace = true }
 platform-core = { workspace = true }
 chrono = { workspace = true }
 serde = { workspace = true }
