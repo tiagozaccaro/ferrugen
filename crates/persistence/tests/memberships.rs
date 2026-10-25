@@ -1,7 +1,7 @@
 //! T047: removed memberships retained/denied; re-adding updates same row.
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
-use persistence::PgMembershipRepository;
+use persistence::{PgMembershipRepository, run_migrations};
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -12,6 +12,12 @@ async fn membership_removal_retained_and_readd_updates_row() {
         .await
         .unwrap();
     let repo = PgMembershipRepository::new(pool.clone());
+    // Reset dirty DB from prior failed runs so migrations apply cleanly.
+    sqlx::query("DROP TABLE IF EXISTS tenant_memberships, sessions, tenants, users CASCADE")
+        .execute(&pool)
+        .await
+        .ok();
+    run_migrations(&pool).await.unwrap();
 
     let user = Uuid::new_v4();
     let tenant = Uuid::new_v4();
