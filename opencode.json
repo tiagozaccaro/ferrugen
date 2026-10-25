@@ -3,6 +3,7 @@
   "plugins": ["open-codebase-index"],
   "default_agent": "build",
   "subagent_depth": 2,
+  "mcp": {},
   "agent": {
     "build": {
       "mode": "primary",

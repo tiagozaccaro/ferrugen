@@ -16,6 +16,22 @@ jobs:
   rust:
     timeout-minutes: 30
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: saas
+          POSTGRES_PASSWORD: saas_dev_only
+          POSTGRES_DB: saas
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U saas -d saas"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgres://saas:saas_dev_only@127.0.0.1:5432/saas
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -34,7 +50,12 @@ jobs:
         run: cargo test --workspace
       - name: Clippy
         run: cargo clippy --workspace --all-targets -- -D warnings
-
+      - name: Add wasm target
+        run: rustup target add wasm32-unknown-unknown
+      - name: Check web wasm
+        run: cargo check -p web --target wasm32-unknown-unknown
+      - name: Dependency boundaries
+        run: bash scripts/check-dependency-boundaries.sh .
   dependency-policy:
     runs-on: ubuntu-latest
     steps:
@@ -45,7 +66,12 @@ jobs:
       - uses: rustsec/audit-check@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+      - name: Guard audit step has no continue-on-error
+        run: |
+          if grep -n "rustsec/audit-check" -A6 .github/workflows/ci.yml | grep -q "continue-on-error"; then
+            echo "Audit step must not have continue-on-error" >&2
+            exit 1
+          fi
 
   workflow-safety:
     runs-on: ubuntu-latest

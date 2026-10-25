@@ -151,9 +151,13 @@ dependencies = [
 name = "application"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
+ "chrono",
  "domain",
  "platform-core",
  "thiserror 2.0.21",
+ "tokio",
+ "uuid",
 ]
 
 [[package]]
@@ -171,6 +175,18 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.119",
+]
+
+[[package]]
+name = "argon2"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3c3610892ee6e0cbce8ae2700349fcf8f98adb0dbfbee85aec3c9179d29cc072"
+dependencies = [
+ "base64ct",
+ "blake2",
+ "cpufeatures 0.2.17",
+ "password-hash",
 ]
 
 [[package]]
@@ -279,17 +295,29 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 name = "audit"
 version = "0.1.0"
 dependencies = [
+ "application",
+ "async-trait",
  "chrono",
  "platform-core",
  "serde",
+ "tracing",
 ]
 
 [[package]]
 name = "auth"
 version = "0.1.0"
 dependencies = [
+ "application",
+ "argon2",
+ "async-trait",
+ "audit",
+ "chrono",
  "platform-core",
+ "rand 0.8.8",
+ "sha2",
  "thiserror 2.0.21",
+ "tokio",
+ "uuid",
 ]
 
 [[package]]
@@ -470,6 +498,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7eff00be299a18769011411c9def0d827e8f2d7bf0c3dbf53633147a8867fd1f"
 dependencies = [
  "no_std_io2",
+]
+
+[[package]]
+name = "blake2"
+version = "0.10.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "46502ad458c9a52b69d4d4d32775c788b7a1b85e8bc9d482d92250fc0e3f8efe"
+dependencies = [
+ "digest",
 ]
 
 [[package]]
@@ -1820,6 +1857,7 @@ version = "0.1.0"
 dependencies = [
  "platform-core",
  "thiserror 2.0.21",
+ "uuid",
 ]
 
 [[package]]
@@ -3039,8 +3077,14 @@ dependencies = [
 name = "infrastructure"
 version = "0.1.0"
 dependencies = [
+ "application",
+ "async-trait",
+ "auth",
+ "domain",
  "persistence",
+ "platform-core",
  "storage",
+ "uuid",
 ]
 
 [[package]]
@@ -4152,6 +4196,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "password-hash"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "346f04948ba92c43e8469c1ee6736c7563d71012b17d40745260fe106aac2166"
+dependencies = [
+ "base64ct",
+ "rand_core 0.6.4",
+ "subtle",
+]
+
+[[package]]
 name = "paste"
 version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4182,9 +4237,12 @@ checksum = "9b4f627cb1b25917193a259e49bdad08f671f8d9708acfd5fe0a8c1455d87220"
 name = "persistence"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "platform-core",
  "sqlx",
+ "thiserror 2.0.21",
  "tokio",
+ "uuid",
 ]
 
 [[package]]
