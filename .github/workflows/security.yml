@@ -17,6 +17,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain-file: rust-toolchain.toml
+      - name: Install cargo-deny
+        run: cargo install cargo-deny --locked
       - name: cargo deny
         run: cargo deny check
       - name: cargo audit
