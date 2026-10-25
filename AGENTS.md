@@ -46,6 +46,11 @@ Run applicable commands:
 - `cargo audit`
 - `bash tests/release/release-test.sh` (when release/changelog tooling changes)
 
+## Before creating any PR
+- Run the same checks the PR runs (see Required checks above plus `bash scripts/github/check-pr-body.sh`, dependency-boundary script, and readiness/health contract checks when applicable).
+- Fix all errors; loop until everything passes. Never create a PR with known failures.
+- When a fix is out of scope (e.g. upstream unpatched vulnerability, external service limitation), document it explicitly in `specs/001-platform-foundation/validation.md` or the PR description, and confirm the PR remains mergeable regardless.
+
 ## Agent instruction system
 Canonical policies live in `docs/` (`rust-engineering.md`, `security-policy.md`, `testing-policy.md`) and reusable skills in `docs/skills/`. Directory-specific adapters go in `crates/<name>/AGENTS.md` or `apps/<name>/AGENTS.md`.
 
