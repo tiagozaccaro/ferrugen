@@ -307,3 +307,4 @@ Their owning specs and sequencing belong to P011-P019 / specs 002-016. P013 in t
 - Repository-level tenant scoping is mandatory; do not add RLS or `orgs` tables in this slice.
 - The API remains a thin Axum entry point with health endpoints only; auth HTTP routes are P011/spec 002.
 - Run the full validation suite after T051 (readiness implementation), not before; rerun it after any readiness fix.
+P011-P019 delegated
