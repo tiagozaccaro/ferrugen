@@ -1,4 +1,5 @@
 pub mod audit;
+pub mod authorize;
 pub mod ports;
 pub mod tenant_context;
 pub mod tenant_service;
