@@ -1,11 +1,8 @@
-use persistence::Pool;
+use persistence::PgPool;
+use std::sync::Arc;
 
+#[derive(Clone)]
 pub struct AppState {
-    pub pool: Pool,
-}
-
-impl AppState {
-    pub fn new(pool: Pool) -> Self {
-        Self { pool }
-    }
+    pub db: Arc<PgPool>,
+    pub migration_state: Option<bool>,
 }

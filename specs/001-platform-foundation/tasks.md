@@ -60,13 +60,13 @@ Plan phases 0-6 map to task phases 1-6: plan Phase 0 → task Phase 1, plan Phas
 
 **Independent Test**: `bash scripts/tests/check-dependency-boundaries-test.sh` fails before the script exists and passes after; `cargo test -p platform-core` passes; the workspace still checks on the host and for wasm32.
 
-- [ ] T001 Create a failing boundary fixture test in `scripts/tests/check-dependency-boundaries-test.sh` proving an upward crate dependency and a misplaced heavy dependency are rejected.
-- [ ] T002 Implement `scripts/check-dependency-boundaries.sh` using `cargo metadata --no-deps` and `jq`; enforce L0 `platform-core`, L1 `contracts`/`domain`, L2 `application`, L3 capability crates, L4 `infrastructure`/apps, plus `sqlx` only in `persistence`/`infrastructure`, `dioxus` only in `ui`/apps, `axum` only in `apps/api`.
-- [ ] T003 [P] Add `SessionId` and re-exports in `crates/platform-core/src/ids.rs` and `crates/platform-core/src/lib.rs`; add distinctness coverage in `crates/platform-core/tests/ids.rs`.
-- [ ] T004 [P] Add validated `AppConfig` value objects in `crates/platform-core/src/config.rs`; tests in `crates/platform-core/tests/config.rs` must cover missing `DATABASE_URL`, invalid port, non-positive `SESSION_TTL_SECONDS`/`LOGIN_WINDOW_SECONDS`/`LOGIN_LOCKOUT_SECONDS`, and valid defaults.
-- [ ] T005 [P] Add `.env.example` with `DATABASE_URL`, `APP_HOST=127.0.0.1`, `APP_PORT=8080`, `SESSION_TTL_SECONDS=2592000`, `LOGIN_MAX_ATTEMPTS=5`, `LOGIN_WINDOW_SECONDS=900`, `LOGIN_LOCKOUT_SECONDS=900`; contain no real secret.
-- [ ] T006 Add `rustup target add wasm32-unknown-unknown` and `cargo check -p web --target wasm32-unknown-unknown` to `.github/workflows/ci.yml`; do not add desktop/mobile packaging claims.
-- [ ] T007 Add `bash scripts/check-dependency-boundaries.sh` to `.github/workflows/ci.yml` after the host checks; remove `continue-on-error: true` from the `rustsec/audit-check@v2` step so `cargo audit` is blocking; add a CI guard that fails if the audit step regains `continue-on-error`; keep `cargo deny` blocking.
+- [x] T001 Create a failing boundary fixture test in `scripts/tests/check-dependency-boundaries-test.sh` proving an upward crate dependency and a misplaced heavy dependency are rejected.
+- [x] T002 Implement `scripts/check-dependency-boundaries.sh` using `cargo metadata --no-deps` and `jq`; enforce L0 `platform-core`, L1 `contracts`/`domain`, L2 `application`, L3 capability crates, L4 `infrastructure`/apps, plus `sqlx` only in `persistence`/`infrastructure`, `dioxus` only in `ui`/apps, `axum` only in `apps/api`.
+- [x] T003 [P] Add `SessionId` and re-exports in `crates/platform-core/src/ids.rs` and `crates/platform-core/src/lib.rs`; add distinctness coverage in `crates/platform-core/tests/ids.rs`.
+- [x] T004 [P] Add validated `AppConfig` value objects in `crates/platform-core/src/config.rs`; tests in `crates/platform-core/tests/config.rs` must cover missing `DATABASE_URL`, invalid port, non-positive `SESSION_TTL_SECONDS`/`LOGIN_WINDOW_SECONDS`/`LOGIN_LOCKOUT_SECONDS`, and valid defaults.
+- [x] T005 [P] Add `.env.example` with `DATABASE_URL`, `APP_HOST=127.0.0.1`, `APP_PORT=8080`, `SESSION_TTL_SECONDS=2592000`, `LOGIN_MAX_ATTEMPTS=5`, `LOGIN_WINDOW_SECONDS=900`, `LOGIN_LOCKOUT_SECONDS=900`; contain no real secret.
+- [x] T006 Add `rustup target add wasm32-unknown-unknown` and `cargo check -p web --target wasm32-unknown-unknown` to `.github/workflows/ci.yml`; do not add desktop/mobile packaging claims.
+- [x] T007 Add `bash scripts/check-dependency-boundaries.sh` to `.github/workflows/ci.yml` after the host checks; remove `continue-on-error: true` from the `rustsec/audit-check@v2` step so `cargo audit` is blocking; add a CI guard that fails if the audit step regains `continue-on-error`; keep `cargo deny` blocking.
 
 **Checkpoint**: Boundary and primitive checks are green; Phase 2 can start.
 
@@ -80,18 +80,18 @@ Plan phases 0-6 map to task phases 1-6: plan Phase 0 → task Phase 1, plan Phas
 
 **Independent Test**: `cargo test -p persistence` with `DATABASE_URL` set passes fresh-migration, re-run, uniqueness, atomic tenant creation, session validity and cross-tenant denial tests.
 
-- [ ] T008 Add a `postgres:17` service with a `pg_isready` health check and `DATABASE_URL=postgres://saas:saas_dev_only@127.0.0.1:5432/saas` to the `rust` job in `.github/workflows/ci.yml`.
-- [ ] T009 [P] Implement `PgPool` construction with a bounded acquire timeout in `crates/persistence/src/pool.rs`; map configuration/connection failures to safe errors.
-- [ ] T010 [P] Implement the migration runner in `crates/persistence/src/migrations.rs` using `sqlx::migrate!` from the repository `migrations/` directory.
-- [ ] T011 [P] Write `migrations/0001_foundation.sql` with `users`, `tenants`, `tenant_memberships` and `sessions`, including: `users.email` `NOT NULL UNIQUE` stored lowercase; `tenants.name` `CHECK (char_length(name) BETWEEN 1 AND 120)`; membership role `CHECK (role IN ('owner','admin','member','viewer'))`, status `CHECK (status IN ('invited','active','removed'))`, primary key `(user_id, tenant_id)`; `sessions.token_hash` 32-byte `BYTEA NOT NULL UNIQUE`, `expires_at CHECK (expires_at > created_at)`, nullable `revoked_at`; indexes from `data-model.md`.
-- [ ] T012 [P] Update `migrations/README.md` to describe the four-table slice and mark `orgs`, roles/permissions tables, `audit_events` and `jobs` as deferred.
-- [ ] T013 Add `sqlx::test` migration coverage in `crates/persistence/tests/migrations.rs`: a fresh database applies `0001_foundation.sql`, and a second migration run is a no-op.
-- [ ] T014 [P] Implement `PgUserRepository` in `crates/persistence/src/users.rs` with `create`, `find_by_email` and `find_by_id`; duplicate email maps to a persistence `EmailTaken` error; tests in `crates/persistence/tests/users.rs`. The auth trait adapter is T032.
-- [ ] T015 [P] Implement `PgTenantRepository` in `crates/persistence/src/tenants.rs`; `create_tenant_with_owner` must insert the tenant and an active `owner` membership in one transaction; tests in `crates/persistence/tests/tenants.rs`. The application trait adapter is T039.
-- [ ] T016 [P] Implement `PgMembershipRepository` in `crates/persistence/src/memberships.rs`; every tenant-scoped query includes `tenant_id`; `change_role`/`remove_member` use a transaction with `SELECT ... FOR UPDATE`; enforce the last-owner guard and `(user_id, tenant_id)` uniqueness across statuses; tests in `crates/persistence/tests/memberships.rs`. The application trait adapter is T039.
-- [ ] T017 [P] Implement `PgSessionRepository` in `crates/persistence/src/sessions.rs` with `create`, `find_by_token_hash`, `revoke` and `delete_expired`; tests in `crates/persistence/tests/sessions.rs` cover expired and revoked sessions. The auth trait adapter is T032.
-- [ ] T018 Add cross-tenant read/write denial tests in `crates/persistence/tests/tenant_isolation.rs`, including an inactive/removed membership denial.
-- [ ] T019 Export the persistence repositories and construct `PgPool`-backed repository values in `crates/persistence/src/lib.rs` and `crates/infrastructure/src/wiring/mod.rs`; add a compile-time wiring smoke test in `crates/infrastructure/tests/wiring.rs`; trait adapters are T032/T039.
+- [x] T008 Add a `postgres:17` service with a `pg_isready` health check and `DATABASE_URL=postgres://saas:saas_dev_only@127.0.0.1:5432/saas` to the `rust` job in `.github/workflows/ci.yml`.
+- [x] T009 [P] Implement `PgPool` construction with a bounded acquire timeout in `crates/persistence/src/pool.rs`; map configuration/connection failures to safe errors.
+- [x] T010 [P] Implement the migration runner in `crates/persistence/src/migrations.rs` using `sqlx::migrate!` from the repository `migrations/` directory.
+- [x] T011 [P] Write `migrations/0001_foundation.sql` with `users`, `tenants`, `tenant_memberships` and `sessions`, including: `users.email` `NOT NULL UNIQUE` stored lowercase; `tenants.name` `CHECK (char_length(name) BETWEEN 1 AND 120)`; membership role `CHECK (role IN ('owner','admin','member','viewer'))`, status `CHECK (status IN ('invited','active','removed'))`, primary key `(user_id, tenant_id)`; `sessions.token_hash` 32-byte `BYTEA NOT NULL UNIQUE`, `expires_at CHECK (expires_at > created_at)`, nullable `revoked_at`; indexes from `data-model.md`.
+- [x] T012 [P] Update `migrations/README.md` to describe the four-table slice and mark `orgs`, roles/permissions tables, `audit_events` and `jobs` as deferred.
+- [x] T013 Add `sqlx::test` migration coverage in `crates/persistence/tests/migrations.rs`: a fresh database applies `0001_foundation.sql`, and a second migration run is a no-op.
+- [x] T014 [P] Implement `PgUserRepository` in `crates/persistence/src/users.rs` with `create`, `find_by_email` and `find_by_id`; duplicate email maps to a persistence `EmailTaken` error; tests in `crates/persistence/tests/users.rs`. The auth trait adapter is T032.
+- [x] T015 [P] Implement `PgTenantRepository` in `crates/persistence/src/tenants.rs`; `create_tenant_with_owner` must insert the tenant and an active `owner` membership in one transaction; tests in `crates/persistence/tests/tenants.rs`. The application trait adapter is T039.
+- [x] T016 [P] Implement `PgMembershipRepository` in `crates/persistence/src/memberships.rs`; every tenant-scoped query includes `tenant_id`; `change_role`/`remove_member` use a transaction with `SELECT ... FOR UPDATE`; enforce the last-owner guard and `(user_id, tenant_id)` uniqueness across statuses; tests in `crates/persistence/tests/memberships.rs`. The application trait adapter is T039.
+- [x] T017 [P] Implement `PgSessionRepository` in `crates/persistence/src/sessions.rs` with `create`, `find_by_token_hash`, `revoke` and `delete_expired`; tests in `crates/persistence/tests/sessions.rs` cover expired and revoked sessions. The auth trait adapter is T032.
+- [x] T018 Add cross-tenant read/write denial tests in `crates/persistence/tests/tenant_isolation.rs`, including an inactive/removed membership denial.
+- [x] T019 Export the persistence repositories and construct `PgPool`-backed repository values in `crates/persistence/src/lib.rs` and `crates/infrastructure/src/wiring/mod.rs`; add a compile-time wiring smoke test in `crates/infrastructure/tests/wiring.rs`; trait adapters are T032/T039.
 
 **Checkpoint**: Schema and repositories are ready; US1 and US2 can start in parallel.
 
@@ -105,22 +105,22 @@ Plan phases 0-6 map to task phases 1-6: plan Phase 0 → task Phase 1, plan Phas
 
 ### Tests for US1 (write first; confirm failure) ⚠️
 
-- [ ] T020 [P] [US1] Write failing service tests in `crates/auth/tests/auth_service.rs` for register/login/logout/authenticate, duplicate email `EmailTaken`, password length 12-128 `WeakPassword`, invalid credentials, expired session and revoked session; record a non-gating login p95 benchmark; do not fail CI on wall-clock timing.
-- [ ] T021 [P] [US1] Write failing throttle tests in `crates/auth/tests/login_throttle.rs` for 5 failures per 15 minutes, 15-minute lockout, successful-login reset and deterministic `Clock` behavior.
-- [ ] T022 [P] [US1] Write failing audit tests in `crates/auth/tests/audit_events.rs` proving login success, login failure and logout events reach a recording application-owned `AuditSink` without secrets.
-- [ ] T023 [P] [US1] Write failing redaction tests in `crates/auth/tests/redaction.rs` proving raw tokens, token hashes and password hashes never appear in `Debug` output or logs.
+- [x] T020 [P] [US1] Write failing service tests in `crates/auth/tests/auth_service.rs` for register/login/logout/authenticate, duplicate email `EmailTaken`, password length 12-128 `WeakPassword`, invalid credentials, expired session and revoked session; record a non-gating login p95 benchmark; do not fail CI on wall-clock timing.
+- [x] T021 [P] [US1] Write failing throttle tests in `crates/auth/tests/login_throttle.rs` for 5 failures per 15 minutes, 15-minute lockout, successful-login reset and deterministic `Clock` behavior.
+- [x] T022 [P] [US1] Write failing audit tests in `crates/auth/tests/audit_events.rs` proving login success, login failure and logout events reach a recording application-owned `AuditSink` without secrets.
+- [x] T023 [P] [US1] Write failing redaction tests in `crates/auth/tests/redaction.rs` proving raw tokens, token hashes and password hashes never appear in `Debug` output or logs.
 
 ### Implementation for US1
 
-- [ ] T024 [US1] Complete the rustauth spike and record the decision in `docs/architecture/adr/0001-rustauth.md`; verify `rustauth` 0.3 + `rustauth-sqlx` 0.3 license, maintenance, local password auth, session creation/revocation, Axum integration, SQLx/PostgreSQL compatibility and multi-tenant suitability. If the gate fails, stop and request a constitution amendment.
-- [ ] T025 [US1] Add auth ports in `crates/auth/src/ports.rs`: `UserRepository`, `SessionRepository`, `Clock`, `PasswordHasher`, `TokenCodec`, `LoginThrottle`, plus `NewUser`/`User`/`NewSession`/`Session`; add `application`, `chrono` and `async-trait` dependencies to `crates/auth/Cargo.toml` and import the application-owned `AuditSink` from `crates/application/src/audit.rs`; add `sha2`, `rand` (or `getrandom`) and `base64`/`hex` dependencies for T027. T029 must land first; T025 must precede T026-T028.
-- [ ] T026 [P] [US1] Implement the Argon2id `PasswordHasher` in `crates/auth/src/password.rs`, using `tokio::task::spawn_blocking`; never log passwords or hashes.
-- [ ] T027 [P] [US1] Implement the opaque token codec in `crates/auth/src/token.rs`: 32 CSPRNG bytes, transport encoding, SHA-256 storage hash and redacted `Debug`.
-- [ ] T028 [P] [US1] Implement the in-memory fixed-window `LoginThrottle` in `crates/auth/src/throttle.rs`, keyed by normalized email and driven by `Clock`.
-- [ ] T029 [US1] Implement `AuditAction`, `AuditEvent`, `AuditOutcome`, `AuditSink` and `AuditError` in `crates/application/src/audit.rs`; add `chrono` and `async-trait` to `crates/application/Cargo.toml`; implement tracing and recording sinks in `crates/audit/src/lib.rs` and add `application` and `async-trait` to `crates/audit/Cargo.toml`; no passwords, raw tokens or token hashes. This application-owned port must land before T025.
-- [ ] T030 [US1] Add `AuthError` variants `EmailTaken`, `WeakPassword`, `TooManyAttempts`, `SessionExpired`, `SessionRevoked`, `Repository(String)` and `Hashing(String)` in `crates/auth/src/lib.rs`.
-- [ ] T031 [US1] Implement `AuthService` in `crates/auth/src/service.rs`: normalize email; register with password length 12-128; login with throttle and audit; logout revokes idempotently; authenticate rejects missing/revoked/expired sessions.
-- [ ] T032 [US1] Implement the auth `UserRepository`/`SessionRepository` trait adapters over `PgUserRepository`/`PgSessionRepository` in `crates/infrastructure/src/wiring/auth.rs`; map persistence errors to `AuthError` (`EmailTaken`, `Repository`); add `application`, `auth`, `domain`, `tokio` and `async-trait` to `crates/infrastructure/Cargo.toml`; add integration coverage in `crates/infrastructure/tests/wiring.rs`; keep `crates/auth` independent of SQLx.
+- [x] T024 [US1] Complete the rustauth spike and record the decision in `docs/architecture/adr/0001-rustauth.md`; verify `rustauth` 0.3 + `rustauth-sqlx` 0.3 license, maintenance, local password auth, session creation/revocation, Axum integration, SQLx/PostgreSQL compatibility and multi-tenant suitability. If the gate fails, stop and request a constitution amendment.
+- [x] T025 [US1] Add auth ports in `crates/auth/src/ports.rs`: `UserRepository`, `SessionRepository`, `Clock`, `PasswordHasher`, `TokenCodec`, `LoginThrottle`, plus `NewUser`/`User`/`NewSession`/`Session`; add `application`, `chrono` and `async-trait` dependencies to `crates/auth/Cargo.toml` and import the application-owned `AuditSink` from `crates/application/src/audit.rs`; add `sha2`, `rand` (or `getrandom`) and `base64`/`hex` dependencies for T027. T029 must land first; T025 must precede T026-T028.
+- [x] T026 [P] [US1] Implement the Argon2id `PasswordHasher` in `crates/auth/src/password.rs`, using `tokio::task::spawn_blocking`; never log passwords or hashes.
+- [x] T027 [P] [US1] Implement the opaque token codec in `crates/auth/src/token.rs`: 32 CSPRNG bytes, transport encoding, SHA-256 storage hash and redacted `Debug`.
+- [x] T028 [P] [US1] Implement the in-memory fixed-window `LoginThrottle` in `crates/auth/src/throttle.rs`, keyed by normalized email and driven by `Clock`.
+- [x] T029 [US1] Implement `AuditAction`, `AuditEvent`, `AuditOutcome`, `AuditSink` and `AuditError` in `crates/application/src/audit.rs`; add `chrono` and `async-trait` to `crates/application/Cargo.toml`; implement tracing and recording sinks in `crates/audit/src/lib.rs` and add `application` and `async-trait` to `crates/audit/Cargo.toml`; no passwords, raw tokens or token hashes. This application-owned port must land before T025.
+- [x] T030 [US1] Add `AuthError` variants `EmailTaken`, `WeakPassword`, `TooManyAttempts`, `SessionExpired`, `SessionRevoked`, `Repository(String)` and `Hashing(String)` in `crates/auth/src/lib.rs`.
+- [x] T031 [US1] Implement `AuthService` in `crates/auth/src/service.rs`: normalize email; register with password length 12-128; login with throttle and audit; logout revokes idempotently; authenticate rejects missing/revoked/expired sessions.
+- [x] T032 [US1] Implement the auth `UserRepository`/`SessionRepository` trait adapters over `PgUserRepository`/`PgSessionRepository` in `crates/infrastructure/src/wiring/auth.rs`; map persistence errors to `AuthError` (`EmailTaken`, `Repository`); add `application`, `auth`, `domain`, `tokio` and `async-trait` to `crates/infrastructure/Cargo.toml`; add integration coverage in `crates/infrastructure/tests/wiring.rs`; keep `crates/auth` independent of SQLx.
 
 **Checkpoint**: US1 is independently testable at the service layer; US2 can proceed.
 
@@ -134,16 +134,16 @@ Plan phases 0-6 map to task phases 1-6: plan Phase 0 → task Phase 1, plan Phas
 
 ### Tests for US2 (write first; confirm failure) ⚠️
 
-- [ ] T033 [P] [US2] Write failing tenant-context tests in `crates/application/tests/tenant_context.rs`: active membership resolves with the correct role; missing, invited and removed memberships return `NotMember`.
-- [ ] T034 [P] [US2] Write failing tenant-service tests in `crates/application/tests/tenant_service.rs`: tenant name bounds, atomic creation call, cross-tenant resolution denial and no tenant trust without membership.
+- [x] T033 [P] [US2] Write failing tenant-context tests in `crates/application/tests/tenant_context.rs`: active membership resolves with the correct role; missing, invited and removed memberships return `NotMember`.
+- [x] T034 [P] [US2] Write failing tenant-service tests in `crates/application/tests/tenant_service.rs`: tenant name bounds, atomic creation call, cross-tenant resolution denial and no tenant trust without membership.
 
 ### Implementation for US2
 
-- [ ] T035 [P] [US2] Add `Role` and `MembershipStatus` enums in `crates/domain/src/role.rs` and `crates/domain/src/membership.rs`; extend `TenantContext` with `role: Role` in `crates/application/src/tenant_context.rs`; keep fields private and expose getters.
-- [ ] T036 [US2] Update `crates/domain/src/lib.rs` so `Membership` carries `Role`/`MembershipStatus`; update `crates/application/src/ports.rs` so tenant-scoped methods require a verified `TenantContext`.
-- [ ] T037 [US2] Implement `TenantService` in `crates/application/src/tenant_service.rs` with `create_tenant`, `resolve_context`, `change_role` and `remove_member`; delegate atomicity/locking to repositories.
-- [ ] T038 [US2] Update `resolve_tenant_context` to accept the requested tenant ID only after an active membership lookup and return `ApplicationError::NotMember` for missing/inactive memberships.
-- [ ] T039 [US2] Implement the application `MembershipReader`/`TenantRepository`/`MembershipRepository` adapters in `crates/infrastructure/src/wiring/tenancy.rs`; map persistence errors to `ApplicationError`; add `application`, `domain`, `tokio` and `async-trait` to `crates/infrastructure/Cargo.toml` if not already present; update `crates/tenancy/src/lib.rs` re-exports for `Role`, `TenantContext` and `TenantService`; extend `crates/infrastructure/tests/wiring.rs` and `crates/persistence/tests/tenant_isolation.rs` with tenant-context cross-tenant read/write cases.
+- [x] T035 [P] [US2] Add `Role` and `MembershipStatus` enums in `crates/domain/src/role.rs` and `crates/domain/src/membership.rs`; extend `TenantContext` with `role: Role` in `crates/application/src/tenant_context.rs`; keep fields private and expose getters.
+- [x] T036 [US2] Update `crates/domain/src/lib.rs` so `Membership` carries `Role`/`MembershipStatus`; update `crates/application/src/ports.rs` so tenant-scoped methods require a verified `TenantContext`.
+- [x] T037 [US2] Implement `TenantService` in `crates/application/src/tenant_service.rs` with `create_tenant`, `resolve_context`, `change_role` and `remove_member`; delegate atomicity/locking to repositories.
+- [x] T038 [US2] Update `resolve_tenant_context` to accept the requested tenant ID only after an active membership lookup and return `ApplicationError::NotMember` for missing/inactive memberships.
+- [x] T039 [US2] Implement the application `MembershipReader`/`TenantRepository`/`MembershipRepository` adapters in `crates/infrastructure/src/wiring/tenancy.rs`; map persistence errors to `ApplicationError`; add `application`, `domain`, `tokio` and `async-trait` to `crates/infrastructure/Cargo.toml` if not already present; update `crates/tenancy/src/lib.rs` re-exports for `Role`, `TenantContext` and `TenantService`; extend `crates/infrastructure/tests/wiring.rs` and `crates/persistence/tests/tenant_isolation.rs` with tenant-context cross-tenant read/write cases.
 
 **Checkpoint**: US2 is independently testable; US3 can start.
 
@@ -157,18 +157,18 @@ Plan phases 0-6 map to task phases 1-6: plan Phase 0 → task Phase 1, plan Phas
 
 ### Tests for US3 (write first; confirm failure) ⚠️
 
-- [ ] T040 [P] [US3] Write failing matrix tests in `crates/domain/tests/role_matrix.rs` for all 11 permissions × 4 roles; unknown roles/permissions are denied.
-- [ ] T041 [P] [US3] Write failing authorization tests in `crates/application/tests/authorize.rs`: deny by default; only owner grants/removes owner; admin cannot delete/transfer or remove the last owner.
-- [ ] T042 [P] [US3] Write failing membership-admin tests in `crates/persistence/tests/membership_admin.rs`: last-owner demotion/removal denial, re-add reactivation, removed-membership denial and cross-tenant role change denial.
+- [x] T040 [P] [US3] Write failing matrix tests in `crates/domain/tests/role_matrix.rs` for all 11 permissions × 4 roles; unknown roles/permissions are denied.
+- [x] T041 [P] [US3] Write failing authorization tests in `crates/application/tests/authorize.rs`: deny by default; only owner grants/removes owner; admin cannot delete/transfer or remove the last owner.
+- [x] T042 [P] [US3] Write failing membership-admin tests in `crates/persistence/tests/membership_admin.rs`: last-owner demotion/removal denial, re-add reactivation, removed-membership denial and cross-tenant role change denial.
 
 ### Implementation for US3
 
-- [ ] T043 [P] [US3] Add `Permission` and `Role::allows` in `crates/domain/src/role.rs` using the matrix in `data-model.md`; `Role` is defined in T035.
-- [ ] T044 [P] [US3] Add the deny-by-default `authorize` helper in `crates/application/src/authorize.rs`, returning `ApplicationError::Forbidden`.
-- [ ] T045 [US3] Implement role change and member removal in `crates/application/src/tenant_service.rs` with permission checks and audit events through the application-owned `AuditSink`.
-- [ ] T046 [US3] Implement the transaction, `SELECT ... FOR UPDATE` and last-owner guard in `crates/persistence/src/memberships.rs`.
-- [ ] T047 [US3] Ensure removed memberships are retained and denied, and re-adding updates the same `(user_id, tenant_id)` row to active with the requested role; cover in `crates/persistence/tests/memberships.rs`.
-- [ ] T048 [US3] Write failing audit tests in `crates/application/tests/audit_events.rs` for role change and member removal; then emit those events through the application-owned `AuditSink`; extend the existing application audit tests.
+- [x] T043 [P] [US3] Add `Permission` and `Role::allows` in `crates/domain/src/role.rs` using the matrix in `data-model.md`; `Role` is defined in T035.
+- [x] T044 [P] [US3] Add the deny-by-default `authorize` helper in `crates/application/src/authorize.rs`, returning `ApplicationError::Forbidden`.
+- [x] T045 [US3] Implement role change and member removal in `crates/application/src/tenant_service.rs` with permission checks and audit events through the application-owned `AuditSink`.
+- [x] T046 [US3] Implement the transaction, `SELECT ... FOR UPDATE` and last-owner guard in `crates/persistence/src/memberships.rs`.
+- [x] T047 [US3] Ensure removed memberships are retained and denied, and re-adding updates the same `(user_id, tenant_id)` row to active with the requested role; cover in `crates/persistence/tests/memberships.rs`.
+- [x] T048 [US3] Write failing audit tests in `crates/application/tests/audit_events.rs` for role change and member removal; then emit those events through the application-owned `AuditSink`; extend the existing application audit tests.
 
 **Checkpoint**: All three delivery stories are independently functional.
 
@@ -178,14 +178,14 @@ Plan phases 0-6 map to task phases 1-6: plan Phase 0 → task Phase 1, plan Phas
 
 **Purpose**: API readiness first, then full validation, honest reporting and delegated-work bookkeeping.
 
-- [ ] T049 [P] Create `specs/001-platform-foundation/validation.md` with the exact commands and placeholders for results.
-- [ ] T050 Write failing readiness tests in `apps/api/tests/health.rs`: `/health/live` is always 200; `/health/ready` is 200 only when the readiness port reports database reachable and migrations applied; 503 with `not_ready_database_unavailable` or `not_ready_migrations_failed` otherwise; a delayed readiness check returns 503 within the 2-second bound.
-- [ ] T051 Implement `apps/api/src/state.rs` and `apps/api/src/health.rs`, and wire `apps/api/src/main.rs` to load config, build the pool through `persistence`, run the `persistence` migration runner, record migration state, and serve both endpoints per `contracts/health.md`; add `persistence` to `apps/api/Cargo.toml`; keep `sqlx` out of `apps/api`; make T050 pass.
-- [ ] T052 Run `cargo fmt --all -- --check`, `cargo check --workspace`, `cargo test --workspace` and `cargo clippy --workspace --all-targets -- -D warnings`; record actual results in `specs/001-platform-foundation/validation.md`.
-- [ ] T053 Run `cargo check -p web --target wasm32-unknown-unknown`; record the result in `specs/001-platform-foundation/validation.md`; do not claim desktop/mobile packaging.
-- [ ] T054 Run `cargo deny check`, `cargo audit` and `bash scripts/check-dependency-boundaries.sh`; confirm `.github/workflows/ci.yml` has no `continue-on-error` on the audit step; record results in `specs/001-platform-foundation/validation.md`.
-- [ ] T055 Final scope review: confirm no delegated `P011-P019` work (API/UI/audit persistence/storage/jobs/AI/backup/packaging) was implemented; Phase 2 `T011-T019` schema/repository tasks are in scope. Confirm no desktop/mobile claims, no secrets or raw tokens in logs, and no unresolved `unwrap`/`expect`/panic in production paths; record in `specs/001-platform-foundation/validation.md`.
-- [ ] T056 Update `docs/plans/implementation-roadmap.md` Phase 1a status and mark P011-P019 as delegated in `specs/001-platform-foundation/tasks.md`; do this only after T055 passes.
+- [x] T049 [P] Create `specs/001-platform-foundation/validation.md` with the exact commands and placeholders for results.
+- [x] T050 Write failing readiness tests in `apps/api/tests/health.rs`: `/health/live` is always 200; `/health/ready` is 200 only when the readiness port reports database reachable and migrations applied; 503 with `not_ready_database_unavailable` or `not_ready_migrations_failed` otherwise; a delayed readiness check returns 503 within the 2-second bound.
+- [x] T051 Implement `apps/api/src/state.rs` and `apps/api/src/health.rs`, and wire `apps/api/src/main.rs` to load config, build the pool through `persistence`, run the `persistence` migration runner, record migration state, and serve both endpoints per `contracts/health.md`; add `persistence` to `apps/api/Cargo.toml`; keep `sqlx` out of `apps/api`; make T050 pass.
+- [x] T052 Run `cargo fmt --all -- --check`, `cargo check --workspace`, `cargo test --workspace` and `cargo clippy --workspace --all-targets -- -D warnings`; record actual results in `specs/001-platform-foundation/validation.md`.
+- [x] T053 Run `cargo check -p web --target wasm32-unknown-unknown`; record the result in `specs/001-platform-foundation/validation.md`; do not claim desktop/mobile packaging.
+- [x] T054 Run `cargo deny check`, `cargo audit` and `bash scripts/check-dependency-boundaries.sh`; confirm `.github/workflows/ci.yml` has no `continue-on-error` on the audit step; record results in `specs/001-platform-foundation/validation.md`.
+- [x] T055 Final scope review: confirm no delegated `P011-P019` work (API/UI/audit persistence/storage/jobs/AI/backup/packaging) was implemented; Phase 2 `T011-T019` schema/repository tasks are in scope. Confirm no desktop/mobile claims, no secrets or raw tokens in logs, and no unresolved `unwrap`/`expect`/panic in production paths; record in `specs/001-platform-foundation/validation.md`.
+- [x] T056 Update `docs/plans/implementation-roadmap.md` Phase 1a status and mark P011-P019 as delegated in `specs/001-platform-foundation/tasks.md`; do this only after T055 passes.
 
 ---
 
