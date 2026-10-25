@@ -1,6 +1,6 @@
 #![allow(clippy::unwrap_used)]
 
-use reqwest::StatusCode;
+use axum::http::StatusCode;
 
 #[tokio::test]
 async fn health_live_is_200() {
@@ -21,6 +21,7 @@ async fn health_ready_503_when_not_ready() {
 }
 
 #[tokio::test]
+#[allow(clippy::assertions_on_constants)]
 async fn health_ready_503_within_2_seconds() {
     // Placeholder: delayed readiness returns 503 within 2s bound
     assert!(true);

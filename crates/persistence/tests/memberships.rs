@@ -1,7 +1,7 @@
 //! T047: removed memberships retained/denied; re-adding updates same row.
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
-use persistence::{PersistenceError, PgMembershipRepository};
+use persistence::PgMembershipRepository;
 use sqlx::PgPool;
 use uuid::Uuid;
 

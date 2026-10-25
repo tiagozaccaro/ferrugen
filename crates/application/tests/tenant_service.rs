@@ -243,5 +243,5 @@ async fn remove_member_denied() {
 async fn audit_emits_role_changed_on_success() {
     let audit = RecordingAuditSink::new();
     // audit events are emitted through TenantService; verify sink receives them
-    assert!(!audit.0.lock().unwrap().is_empty() || true); // contract verified
+    assert!(!audit.0.lock().unwrap().is_empty());
 }

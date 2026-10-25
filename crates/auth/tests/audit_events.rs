@@ -2,7 +2,6 @@
 
 use application::audit::AuditAction;
 use audit::RecordingAuditSink;
-use auth::AuthService;
 
 #[tokio::test]
 async fn login_emits_audit_event() {

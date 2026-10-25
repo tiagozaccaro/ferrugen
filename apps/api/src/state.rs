@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use persistence::PgPool;
 use std::sync::Arc;
 

@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use axum::{Json, Router, routing::get};
 use serde_json::{Value, json};
 

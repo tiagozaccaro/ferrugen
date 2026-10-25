@@ -23,7 +23,10 @@ impl RecordingAuditSink {
     }
 
     pub fn events(&self) -> Vec<AuditEvent> {
-        self.events.lock().unwrap().clone()
+        match self.events.lock() {
+            Ok(guard) => guard.clone(),
+            Err(_) => Vec::new(),
+        }
     }
 }
 
@@ -36,7 +39,9 @@ impl Default for RecordingAuditSink {
 #[async_trait::async_trait]
 impl AuditSink for RecordingAuditSink {
     async fn record(&self, event: AuditEvent) -> Result<(), AuditError> {
-        self.events.lock().unwrap().push(event);
+        if let Ok(mut guard) = self.events.lock() {
+            guard.push(event);
+        }
         Ok(())
     }
 }
