@@ -8,21 +8,24 @@ use application::tenant_context::TenantContext;
 use domain::{Membership, MembershipStatus, Role};
 use platform_core::{TenantId, UserId};
 use std::collections::HashMap;
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 use uuid::Uuid;
 
-struct RecordingAuditSink(Mutex<Vec<AuditEvent>>);
+#[derive(Clone)]
+struct RecordingAuditSink(Arc<Mutex<Vec<AuditEvent>>>);
 
 impl RecordingAuditSink {
     fn new() -> Self {
-        Self(Mutex::new(Vec::new()))
+        Self(Arc::new(Mutex::new(Vec::new())))
     }
 }
 
 #[async_trait::async_trait]
 impl AuditSink for RecordingAuditSink {
     async fn record(&self, event: AuditEvent) -> Result<(), application::audit::AuditError> {
-        self.0.lock().unwrap().push(event);
+        if let Ok(mut guard) = self.0.lock() {
+            guard.push(event);
+        }
         Ok(())
     }
 }
@@ -241,7 +244,15 @@ async fn remove_member_denied() {
 }
 #[tokio::test]
 async fn audit_emits_role_changed_on_success() {
+    let reader = InMemMembershipReader::default();
+    let tenant_repo = InMemTenantRepository::default();
+    let membership_repo = InMemMembershipRepository::default();
     let audit = RecordingAuditSink::new();
-    // audit events are emitted through TenantService; verify sink receives them
+    let svc = TenantService::new(reader, tenant_repo, membership_repo, audit.clone());
+    let user_id = UserId(Uuid::new_v4());
+    let target_user_id = UserId(Uuid::new_v4());
+    let tenant_id = TenantId(Uuid::new_v4());
+    let actor = TenantContext::new(user_id, tenant_id, Role::Admin);
+    let _ = svc.change_role(&actor, target_user_id, Role::Member).await;
     assert!(!audit.0.lock().unwrap().is_empty());
 }
