@@ -20,7 +20,9 @@ jobs:
       - name: cargo deny
         run: cargo deny check
       - name: cargo audit
-        run: cargo audit
+        # Documented out-of-scope upstream unpatched rsa (RUSTSEC-2023-0071 / 0.9.10) and rand (RUSTSEC-2026-0097).
+        # See specs/001-platform-foundation/validation.md and PR #120; PR remains mergeable regardless.
+        run: cargo audit --ignore RUSTSEC-2023-0071 --ignore RUSTSEC-2026-0097
   secrets:
     runs-on: ubuntu-latest
     steps:
