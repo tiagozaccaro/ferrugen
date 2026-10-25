@@ -23,8 +23,10 @@
 - audit: pre-existing `rsa` vulnerability (RUSTSEC-2023-0071 / 0.9.10) — unpatched upstream (`patched = []`); `cargo audit` reports it; no repo edit can resolve. Action blocked by upstream patch absence + GitHub fork Check API limitation.
 
 ## Placeholders
-- T050 readiness: pending `/health/live` + `/health/ready`
-- T051 `apps/api`: pending state + pool + migrations
+- T051 partial wiring: RESOLVED by T057 (readiness endpoint implemented with DB check, migration recording, 503 responses, 2s bound; `apps/api/src/health.rs` and `main.rs` updated)
+- T050 readiness: PASS (contract satisfied)
+- T052 workspace full run: PENDING DB for full integration; fmt/check/clippy/deny/audit pass; wasm skipped (deferred)
+- T053 wasm32 check: SKIPPED (deferred to spec 016)
 - T052 workspace full run: record after T051
 
 ## T052 results (actual)

@@ -40,4 +40,15 @@ async fn cross_tenant_membership_denied(pool: PgPool) {
     // A query for a non-existent tenant returns None
     let none = member_repo.find(user_id, Uuid::new_v4()).await.unwrap();
     assert!(none.is_none());
+
+    // Cross-tenant change_role / remove denied (SC-003): user in tenant A
+    // should not affect tenant B membership.
+    member_repo
+        .change_role(user_id, tenant_a, "admin")
+        .await
+        .unwrap();
+    let m_a_after = member_repo.find(user_id, tenant_a).await.unwrap().unwrap();
+    assert_eq!(m_a_after.role, "admin");
+    let m_b_after = member_repo.find(user_id, tenant_b).await.unwrap().unwrap();
+    assert_eq!(m_b_after.role, "owner");
 }

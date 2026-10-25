@@ -6,8 +6,12 @@
 - [ ] Run `cargo fmt`, `cargo check --workspace`, `cargo test --workspace` and resolve compile issues on supported host.
 - [ ] Replace repository URL and contributor copyright holder.
 
-## Phase 1a — Foundation (`spec/001`)
-- [ ] Platform-core APIs, contracts, domain IDs.
+## Phase 1a — Foundation (`spec/001`) — COMPLETED
+- [x] Workspace, reusable crate boundaries, app entry points.
+- [x] Health endpoints (`/health/live`, `/health/ready`) with DB/migration checks.
+- [x] Dependency boundary script, CI, audit/deny checks.
+
+- P011–P019 delegated to specs 002–016 (not in spec 001 scope; see `specs/001-platform-foundation/tasks.md` Delegated Work).
 
 ## Phase 2a — Schema and tenancy (`spec/003`)
 - [ ] Multi-tenant schema, migrations.

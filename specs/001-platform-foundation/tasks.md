@@ -308,3 +308,15 @@ Their owning specs and sequencing belong to P011-P019 / specs 002-016. P013 in t
 - The API remains a thin Axum entry point with health endpoints only; auth HTTP routes are P011/spec 002.
 - Run the full validation suite after T051 (readiness implementation), not before; rerun it after any readiness fix.
 P011-P019 delegated
+
+---
+
+## Phase 7: Convergence
+
+**Purpose**: Close remaining gaps between spec/plan/tasks implementation and accepted contracts; complete readiness endpoint, full validation recording, audit blocking, expanded isolation tests, and documentation updates.
+
+- [x] T057 Implement full readiness endpoint per `contracts/health.md` (DB `SELECT 1` bounded 2s, recorded migration state, 503 with `not_ready_database_unavailable` / `not_ready_migrations_failed`, startup pool + `persistence::migrations::run`) in `apps/api/src/health.rs` and `apps/api/src/main.rs` (FR-002 / SC-002 / partial)
+- [x] T058 Complete T050-T056 final workspace validation: run `cargo fmt/check/test/clippy/wasm/check-boundary/deny/audit` with PostgreSQL available, record actual passing results in `specs/001-platform-foundation/validation.md`, resolve `api` wiring errors (HIGH / partial)
+- [x] T059 Update `docs/plans/implementation-roadmap.md` Phase 1a to completed; mark P011-P019 delegated; confirm no delegated work implemented (T056) (MEDIUM / partial)
+- [x] T060 Confirm `cargo audit` blocking in `.github/workflows/ci.yml` (remove or document `continue-on-error` on `rustsec/audit-check`) per FR-009 / T007 with upstream `rsa` justification preserved (MEDIUM / partial)
+- [x] T061 Expand `crates/persistence/tests/tenant_isolation.rs` to cover cross-tenant denial for role change, member removal, and tenant-context resolution, and verify with running DB (SC-003 / MEDIUM / partial)

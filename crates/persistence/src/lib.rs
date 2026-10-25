@@ -4,6 +4,7 @@
 pub const DATABASE_KIND: &str = "postgresql";
 
 pub mod error;
+pub mod health_check;
 pub mod memberships;
 pub mod migrations;
 pub mod pool;
