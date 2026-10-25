@@ -1,9 +1,10 @@
 use crate::ApplicationError;
 use crate::audit::{AuditAction, AuditEvent, AuditOutcome, AuditSink};
+use crate::authorize::authorize;
 use crate::ports::*;
 use crate::tenant_context::TenantContext;
 use chrono::Utc;
-use domain::{MembershipStatus, Role};
+use domain::{MembershipStatus, Permission, Role};
 use platform_core::{TenantId, UserId};
 use uuid::Uuid;
 
@@ -61,8 +62,8 @@ where
         target_user_id: UserId,
         new_role: Role,
     ) -> Result<(), ApplicationError> {
-        // authorization: owner/admin only
-        if actor.role() != Role::Owner && actor.role() != Role::Admin {
+        // authorization: owner/admin only for role/member changes
+        if authorize(actor.role(), Permission::MemberRoleChange).is_err() {
             self.audit
                 .record(AuditEvent {
                     tenant_id: Some(Uuid::new_v4()), // placeholder; should use tenant id
@@ -106,8 +107,8 @@ where
         actor: &TenantContext,
         target_user_id: UserId,
     ) -> Result<(), ApplicationError> {
-        // authorization: owner/admin only
-        if actor.role() != Role::Owner && actor.role() != Role::Admin {
+        // authorization: owner/admin only for role/member changes
+        if authorize(actor.role(), Permission::MemberRemove).is_err() {
             self.audit
                 .record(AuditEvent {
                     tenant_id: None,
