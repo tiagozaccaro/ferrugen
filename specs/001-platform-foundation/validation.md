@@ -20,7 +20,7 @@
 - tests: application (7), auth (5+), domain (1), persistence (fixture) passing
 - clippy: clean for selected crates
 - deny: clean
-- audit: pre-existing lib-test errors (unrelated to US3); not blocking
+- audit: pre-existing `rsa` vulnerability (RUSTSEC-2023-0071 / 0.9.10) — unpatched upstream (`patched = []`); `cargo audit` reports it; no repo edit can resolve. Action blocked by upstream patch absence + GitHub fork Check API limitation.
 
 ## Placeholders
 - T050 readiness: pending `/health/live` + `/health/ready`
@@ -33,7 +33,7 @@
 - test workspace: FAIL (persistence members test needs DB pool; application/auth/domain pass)
 - clippy selected crates: PASS
 - deny: PASS
-- audit: PASS
+- audit: PASS (1 upstream unpatched `rsa` 0.9.10; not resolvable locally)
 
 ## T053 wasm32 check
 - `cargo check -p web --target wasm32-unknown-unknown`: SKIPPED (not claimed; desktop/mobile packaging out of scope for 001)
