@@ -1,0 +1,41 @@
+name: AI Review Evaluation
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, labeled]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  ai-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify AI review instruction file exists
+        run: |
+          if ! [[ -f docs/ai-review-instructions.md ]]; then
+            echo "FAIL: docs/ai-review-instructions.md missing" >&2
+            exit 1
+          fi
+          echo "PASS: AI review instructions present"
+      - name: Verify PR body includes AI tracking fields
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+          ERR=()
+          # Required tracking fields based on ai-review-instructions.md
+          for token in "Agent / harness" "Scope" "Issue / spec link"; do
+            if ! printf '%s\n' "$PR_BODY" | grep -qF "$token"; then
+              ERR+=("missing AI tracking field: $token")
+            fi
+          done
+          if ((${#ERR[@]})); then
+            echo "FAIL AI review evaluation: ${ERR[*]}" >&2
+            exit 1
+          fi
+          echo "PASS AI review evaluation (tracking fields present)"

@@ -4,7 +4,8 @@
 
 # Reference notes for Ruleset enforcement (configured via GitHub UI, not via file):
 # - Target: refs/heads/main
-# - Required checks: "rust", "dependency-policy", "release-tooling"
+# - Required checks: "rust", "dependency-policy", "security", "agent-compliance",
+#   "ai-review-evaluation", "release-tooling", "workflow-safety"
 # - Pull request required approvals: 0 (self-approval); bump to >0 if review needed
 # - Push restricted to PRs / push denied for non-main branches
 # - Verified commit signatures: NOT required (disabled per instruction).
