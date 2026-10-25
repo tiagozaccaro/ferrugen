@@ -21,6 +21,8 @@ jobs:
         run: cargo install cargo-deny --locked
       - name: cargo deny
         run: cargo deny check
+      - name: Install cargo-audit
+        run: cargo install cargo-audit@0.22.2 --locked
       - name: cargo audit
         # Documented out-of-scope upstream unpatched rsa (RUSTSEC-2023-0071 / 0.9.10) and rand (RUSTSEC-2026-0097).
         # See specs/001-platform-foundation/validation.md and PR #120; PR remains mergeable regardless.
