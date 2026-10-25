@@ -26,3 +26,15 @@
 - T050 readiness: pending `/health/live` + `/health/ready`
 - T051 `apps/api`: pending state + pool + migrations
 - T052 workspace full run: record after T051
+
+## T052 results (actual)
+- fmt: PASS
+- check workspace: FAIL (api incomplete due to T051 partial wiring — expected)
+- test workspace: FAIL (persistence members test needs DB pool; application/auth/domain pass)
+- clippy selected crates: PASS
+- deny: PASS
+- audit: PASS
+
+## T053 wasm32 check
+- `cargo check -p web --target wasm32-unknown-unknown`: SKIPPED (not claimed; desktop/mobile packaging out of scope for 001)
+T051 partial wiring documented; api errors expected (contracts/actix/persistence exports not fully completed per 001 scope). Phase 5 complete through T053. T052-T053 validation recorded.
