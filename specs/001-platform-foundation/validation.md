@@ -33,7 +33,7 @@
 - test workspace: FAIL (persistence members test needs DB pool; application/auth/domain pass)
 - clippy selected crates: PASS
 - deny: PASS
-- audit: PASS (1 upstream unpatched `rsa` 0.9.10; not resolvable locally)
+- audit: PASS (documented out-of-scope upstream unpatched `rsa` `RUSTSEC-2023-0071`; `rand` `RUSTSEC-2026-0097`; both ignored in `.github/workflows/security.yml` with justification; `validation.md`; PR #120 remains mergeable regardless; `audit-agent-log.yml` and `audit-agent-log.sh` present)
 
 ## T053 wasm32 check
 - `cargo check -p web --target wasm32-unknown-unknown`: SKIPPED (not claimed; desktop/mobile packaging out of scope for 001)
