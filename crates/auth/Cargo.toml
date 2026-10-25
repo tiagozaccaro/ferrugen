@@ -7,7 +7,21 @@ license.workspace = true
 
 [dependencies]
 platform-core = { workspace = true }
+application = { path = "../application" }
 thiserror = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+argon2 = { workspace = true }
+rand = { workspace = true }
+sha2 = { workspace = true }
+async-trait = { workspace = true }
+tokio = { workspace = true }
 
 [lints]
 workspace = true
+
+[dev-dependencies]
+audit = { path = "../audit" }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
+async-trait = { workspace = true }
+platform-core = { workspace = true }
