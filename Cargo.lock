@@ -314,7 +314,7 @@ dependencies = [
  "audit",
  "chrono",
  "platform-core",
- "rand 0.8.8",
+ "rand 0.10.3",
  "sha2",
  "thiserror 2.0.21",
  "tokio",
