@@ -33,7 +33,7 @@ jobs:
     env:
       DATABASE_URL: postgres://saas:saas_dev_only@127.0.0.1:5432/saas
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain-file: rust-toolchain.toml
@@ -59,7 +59,7 @@ jobs:
   dependency-policy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: EmbarkStudios/cargo-deny-action@v2
       - name: Install cargo-audit
         run: cargo install cargo-audit@0.22.2 --locked
@@ -82,13 +82,13 @@ jobs:
   workflow-safety:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Workflow injection guard
         run: bash tests/github-governance/workflow-injection-test.sh
 
   release-tooling:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Test changelog release tooling
         run: bash tests/release/release-test.sh
