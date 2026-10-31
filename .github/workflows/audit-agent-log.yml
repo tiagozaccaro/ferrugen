@@ -23,7 +23,7 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: bash scripts/github/audit-agent-log.sh >> agent-audit.md
       - name: Upload audit artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: agent-audit-log-pr-${{ github.event.number }}
           path: agent-audit.md
